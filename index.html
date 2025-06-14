@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Forecast Calculator</title>
-    <link href="https://fonts.googleapis.com/css2?family=Apricot&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Apricot&amp;display=swap" rel="stylesheet">
+
     <style>
 * {
     margin: 0;
@@ -263,6 +264,21 @@ footer {
 .monthly-forecast .relationship-sphere {
     display: none !important;
 }
+/* Force daily forecast to stay within screen */
+.daily-forecast-container {
+    width: 100% !important;
+    max-width: 100vw !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    padding: 10px !important;
+}
+
+.daily-forecast-container * {
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+}
+
+
 
 
 </style>
@@ -1711,8 +1727,21 @@ You might feel very tired today. This is a sign that it’s time to give up bad 
 
         };
 
-        document.getElementById('overallToneResult').innerHTML = dailyForecasts[arcanaNumber] || "A unique daily energy that requires deeper interpretation.";
-    
+      const dailyContent = dailyForecasts[arcanaNumber] || "A unique daily energy...";
+document.getElementById('overallToneResult').innerHTML = `<div class="daily-forecast-container">${dailyContent}</div>`;
+
+
+// Set placeholder text for other spheres
+document.getElementById('moneyResult').textContent = "Daily financial guidance integrated above.";
+document.getElementById('relationshipResult').textContent = "Daily relationship guidance integrated above.";
+document.getElementById('healthResult').textContent = "Daily health guidance integrated above.";
+
+// Hide the separate spheres for daily forecasts
+document.getElementById('moneySphere').style.display = 'none';
+document.getElementById('relationshipSphere').style.display = 'none';
+document.getElementById('healthSphere').style.display = 'none';
+
+
     } else {
         // Keep existing yearly logic unchanged
         const descriptions = {
@@ -1817,12 +1846,7 @@ function saveResults() {
     const relationship = document.getElementById('relationshipResult').textContent;
     const health = document.getElementById('healthResult').textContent;
     
-    // Hide the separate spheres for daily forecasts too
-document.getElementById('moneySphere').style.display = 'none';
-document.getElementById('relationshipSphere').style.display = 'none';
-document.getElementById('healthSphere').style.display = 'none';
-
-    
+   
     const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
     
     const content = `KARMA DECODED - PERSONAL PROGNOSIS
