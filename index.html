@@ -359,6 +359,40 @@ body {
         font-size: 12px !important;
         min-width: 0 !important;
     }
+/* Ultra-compact calendar for mobile */
+@media (max-width: 768px) {
+    .calendar-container {
+        width: 95vw !important;
+        max-width: 95vw !important;
+        margin: 0 auto !important;
+        padding: 2px !important;
+        overflow: hidden !important;
+    }
+    
+    .calendar-grid {
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 1px !important;
+        width: 100% !important;
+    }
+    
+    .calendar-day {
+        padding: 4px 1px !important;
+        font-size: 10px !important;
+        min-height: 25px !important;
+        width: 100% !important;
+        border: 1px solid #ddd !important;
+    }
+    
+    .month-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 3px !important;
+    }
+    
+    .month-btn {
+        padding: 6px 2px !important;
+        font-size: 11px !important;
+        text-align: center !important;
+    }
 }
 
 
