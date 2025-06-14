@@ -262,45 +262,7 @@ footer {
 .monthly-forecast .relationship-sphere {
     display: none !important;
 }
-/* Daily forecast mobile fixes */
-@media (max-width: 768px) {
-    .sphere-content img {
-        width: 100% !important;
-        height: auto !important;
-        max-width: 100%;
-        object-fit: cover;
-        border-radius: 8px;
-        margin: 10px 0;
-    }
-    
-    .sphere-content {
-        padding: 15px 10px;
-        word-wrap: break-word;
-        overflow-wrap: break-word;
-    }
-    
-    .sphere-content p {
-        font-size: 14px;
-        line-height: 1.5;
-        margin: 10px 0;
-    }
-    
-    .results-container {
-        padding: 10px 5px;
-        margin: 0;
-    }
-    
-    .sphere {
-        margin: 15px 5px;
-        padding: 15px 10px;
-    }
-}
 
-/* Prevent horizontal scroll */
-.sphere-content * {
-    max-width: 100%;
-    box-sizing: border-box;
-}
 
 </style>
 
@@ -416,30 +378,6 @@ footer {
         </div>
     </div>
             
-    <div class="sphere" id="moneySphere">
-        <h3>Money Sphere</h3>
-        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Money Sphere">
-        <div class="sphere-content">
-            <p id="moneyResult"></p>
-        </div>
-    </div>
-            
-    <div class="sphere" id="relationshipSphere">
-        <h3>Relationship Sphere</h3>
-        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Relationship Sphere">
-        <div class="sphere-content">
-            <p id="relationshipResult"></p>
-        </div>
-    </div>
-            
-    <div class="sphere" id="healthSphere">
-        <h3>Health Sphere</h3>
-        <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Health Sphere">
-        <div class="sphere-content">
-            <p id="healthResult"></p>
-        </div>
-    </div>
-</div>
     
     <div class="input-group">
         <button onclick="saveResults()">💾 Save Prognosis</button>
