@@ -370,23 +370,41 @@ footer {
 <div id="section3" class="section hidden">
     <div class="prognosis-date" id="prognosisDate"></div>
     
-   <div class="results-container">
-    <div class="sphere">
+    <div class="results-container">
+        <div class="sphere">
+            <h3>Overall Tone</h3>
+            <div class="sphere-content">
+                <p id="overallToneResult"></p>
+            </div>
+        </div>
         
+        <div class="sphere" id="moneySphere">
+            <h3>Money Sphere</h3>
+            <div class="sphere-content">
+                <p id="moneyResult"></p>
+            </div>
+        </div>
         
-        <div class="sphere-content">
-            <p id="overallToneResult"></p>
+        <div class="sphere" id="relationshipSphere">
+            <h3>Relationship Sphere</h3>
+            <div class="sphere-content">
+                <p id="relationshipResult"></p>
+            </div>
+        </div>
+        
+        <div class="sphere" id="healthSphere">
+            <h3>Health Sphere</h3>
+            <div class="sphere-content">
+                <p id="healthResult"></p>
+            </div>
         </div>
     </div>
-      <div class="sphere-content">
-            <p id="healthResult"></p>
-        </div>
-        <div class="input-group">
+    
+    <div class="input-group">
         <button onclick="saveResults()">💾 Save Prognosis</button>
     </div>
 </div>
-    </div>
-</div>
+
     
     <!-- Section 4: Yearly Description -->
         <div id="section4" class="section hidden">
@@ -1799,6 +1817,12 @@ function saveResults() {
     const money = document.getElementById('moneyResult').textContent;
     const relationship = document.getElementById('relationshipResult').textContent;
     const health = document.getElementById('healthResult').textContent;
+    
+    // Hide the separate spheres for daily forecasts too
+document.getElementById('moneySphere').style.display = 'none';
+document.getElementById('relationshipSphere').style.display = 'none';
+document.getElementById('healthSphere').style.display = 'none';
+
     
     const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
     
