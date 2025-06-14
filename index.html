@@ -1,0 +1,1935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Forecast Calculator</title>
+    <link href="https://fonts.googleapis.com/css2?family=Apricot&display=swap" rel="stylesheet">
+    <style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Georgia', serif;
+    color: #5f2797;
+    min-height: 100vh;
+    background: url('https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=1920&q=80');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 30px;
+    color: #5f2797;
+    text-shadow: 2px 2px 4px rgba(255,255,255,0.8);
+    font-weight: bold;
+}
+
+h1, .sphere h3 {
+    font-family: 'Apricot', cursive, 'Georgia', serif;
+}
+
+.section {
+    background: rgba(255,255,255,0.75);
+    border-radius: 15px;
+    padding: 30px;
+    margin: 20px 0;
+    box-shadow: 0 6px 20px rgba(95, 39, 151, 0.2);
+    border: 2px solid rgba(95, 39, 151, 0.1);
+}
+
+.input-group {
+    margin: 20px 0;
+}
+
+label {
+    display: block;
+    margin-bottom: 15px;
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #5f2797;
+}
+
+input, select {
+    padding: 15px;
+    font-size: 1.1rem;
+    border: 2px solid #5f2797;
+    border-radius: 10px;
+    width: 250px;
+    max-width: 100%;
+    color: #5f2797;
+    background: rgba(255,255,255,0.9);
+}
+
+input:focus, select:focus {
+    outline: none;
+    border-color: #8B4CB8;
+    box-shadow: 0 0 10px rgba(95, 39, 151, 0.3);
+}
+
+button {
+    background: #d9cded;
+    color: #5f2797;
+    padding: 15px 30px;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin: 15px 10px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(95, 39, 151, 0.3);
+}
+
+button:hover {
+    background: #c9b8dd;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(95, 39, 151, 0.4);
+}
+
+.hidden {
+    display: none;
+}
+
+.sphere {
+    background: rgba(255,255,255,0.98);
+    border-radius: 15px;
+    padding: 25px;
+    margin: 20px 0;
+    text-align: left;
+    box-shadow: 0 4px 15px rgba(95, 39, 151, 0.2);
+    border-left: 5px solid #5f2797;
+}
+
+.sphere h3 {
+    color: #5f2797;
+    font-size: 1.6rem;
+    margin-bottom: 15px;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.sphere img {
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    float: left;
+    margin-right: 20px;
+    margin-bottom: 10px;
+    object-fit: cover;
+    border: 3px solid #5f2797;
+}
+
+.sphere-content {
+    overflow: hidden;
+    line-height: 1.8;
+    color: #5f2797;
+    font-size: 1.1rem;
+}
+
+.calculation-inputs {
+    background: rgba(242, 229, 246, 0.8);
+    border-radius: 12px;
+    padding: 25px;
+    margin: 20px 0;
+}
+
+.month-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.month-btn {
+    padding: 10px;
+    background: rgba(255,255,255,0.9);
+    border: 2px solid #5f2797;
+    border-radius: 8px;
+    color: #5f2797;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.month-btn:hover, .month-btn.selected {
+    background: #5f2797;
+    color: white;
+}
+
+.calendar {
+    background: rgba(255,255,255,0.95);
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+}
+
+.calendar-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 5px;
+}
+
+.calendar-day {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+    cursor: pointer;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.calendar-day:hover, .calendar-day.selected {
+    background: #5f2797;
+    color: white;
+}
+
+.calendar-day.disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.prognosis-date {
+    background: linear-gradient(135deg, #5f2797, #8B4CB8);
+    color: white;
+    padding: 15px;
+    border-radius: 10px;
+    margin: 20px 0;
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+footer {
+    background: #d9cded;
+    color: #5f2797;
+    text-align: center;
+    padding: 15px;
+    margin-top: auto;
+    font-size: 1rem;
+}
+
+@media (max-width: 768px) {
+    .container {
+        padding: 10px;
+    }
+    h1 {
+        font-size: 2rem;
+    }
+    .section {
+        padding: 20px;
+    }
+       input, select {
+        width: 100%;
+        max-width: 300px;
+    }
+    button {
+        width: 100%;
+        max-width: 300px;
+        margin: 10px 0;
+    }
+    .month-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .sphere img {
+        width: 70px;
+        height: 70px;
+    }
+    
+    .monthly-forecast .health-sphere,
+.monthly-forecast .money-sphere, 
+.monthly-forecast .relationship-sphere {
+    display: none !important;
+}
+
+}
+</style>
+
+</head>
+<body>
+    <div class="container">
+        <h1>Forecast Calculator</h1>
+        
+        <!-- Section 1: Birth Date Input -->
+        <div id="section1" class="section">
+            <!-- Initial Birth Date Input -->
+            <div id="birthDateInput" class="input-group">
+                <label for="birthDate">Enter Your Full Date of Birth:</label>
+                <input type="text" id="birthDate" placeholder="DD/MM/YYYY" maxlength="10">
+                <button onclick="showConfirmation()">Continue</button>
+            </div>
+            
+            <!-- Confirmation Section -->
+            <div id="confirmationSection" class="hidden" style="background: #c5bbe3; border-radius: 12px; padding: 25px; margin: 20px 0; border: 2px solid #511c62;">
+                <h3 style="color: #e65100; margin-bottom: 15px; font-family: 'Apricot', cursive, 'Georgia', serif;">⚠️ Important Notice</h3>
+                <p style="color: #511c62; font-size: 1.1rem; line-height: 1.6; margin-bottom: 20px;">
+                    We are now saving your date of birth <strong>permanently</strong> on this device for all future calculations on this website. 
+                    This ensures a personalized experience for your future visits.
+                </p>
+                
+                <div style="background: rgba(255,255,255,0.8); padding: 15px; border-radius: 8px; margin: 15px 0;">
+                    <p style="color: #5f2797; font-size: 1.2rem; font-weight: bold;">
+                        Please confirm: Is <span id="confirmBirthDate" style="color: #e65100;"></span> your correct date of birth?
+                    </p>
+                </div>
+                
+                <div style="margin: 20px 0;">
+                    <label style="display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 1.1rem; color: #511c62; font-style: italic;">
+                        <input type="checkbox" id="confirmCheckbox" style="margin-right: 10px; transform: scale(1.2);">
+                        "Yes, this is my correct date of birth and I agree to save it permanently"
+                    </label>
+                </div>
+                
+                <div>
+                    <button onclick="saveBirthDate()" style="background: #4caf50; margin-right: 10px;">✅ Confirm & Save</button>
+                    <button onclick="goBackToEdit()" style="background: #f44336;">❌ Go Back to Edit</button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Section 2: Calculation Type Selection -->
+        <div id="section2" class="section hidden">
+            <div class="input-group">
+                <label for="calculationType">🔮 What do you want to calculate?</label>
+                <select id="calculationType" onchange="showCalculationInputs()">
+                    <option value="">Select your prognosis type...</option>
+                    <option value="yearly">📅 Yearly Prognosis</option>
+                    <option value="monthly">🌙 Monthly Prognosis</option>
+                    <option value="daily">☀️ Daily Prognosis</option>
+                </select>
+            </div>
+            
+            <!-- Yearly Prognosis Input -->
+            <div id="yearlyInputs" class="calculation-inputs hidden">
+                <label>Enter the year for your prognosis:</label>
+                <input type="text" id="prognosisYear" placeholder="YYYY" maxlength="4">
+                <button onclick="calculateYearly()">Get Yearly Prognosis</button>
+            </div>
+            
+            <!-- Monthly Prognosis Input -->
+            <div id="monthlyInputs" class="calculation-inputs hidden">
+                <label>Select the month:</label>
+                <div class="month-grid">
+                    <div class="month-btn" onclick="selectMonth(1)">January</div>
+                    <div class="month-btn" onclick="selectMonth(2)">February</div>
+                    <div class="month-btn" onclick="selectMonth(3)">March</div>
+                    <div class="month-btn" onclick="selectMonth(4)">April</div>
+                    <div class="month-btn" onclick="selectMonth(5)">May</div>
+                    <div class="month-btn" onclick="selectMonth(6)">June</div>
+                    <div class="month-btn" onclick="selectMonth(7)">July</div>
+                    <div class="month-btn" onclick="selectMonth(8)">August</div>
+                    <div class="month-btn" onclick="selectMonth(9)">September</div>
+                    <div class="month-btn" onclick="selectMonth(10)">October</div>
+                    <div class="month-btn" onclick="selectMonth(11)">November</div>
+                    <div class="month-btn" onclick="selectMonth(12)">December</div>
+                </div>
+                <input type="hidden" id="selectedMonth">
+                <label>Enter the year:</label>
+                <input type="text" id="prognosisYearMonthly" placeholder="YYYY" maxlength="4">
+                <button onclick="calculateMonthly()">Get Monthly Prognosis</button>
+            </div>
+            
+            <!-- Daily Prognosis Input -->
+            <div id="dailyInputs" class="calculation-inputs hidden">
+                <div class="calendar">
+                    <div class="calendar-header">
+                        <button onclick="changeMonth(-1)">‹</button>
+                        <h3 id="calendarTitle">Select Date</h3>
+                        <button onclick="changeMonth(1)">›</button>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid"></div>
+                </div>
+                <input type="hidden" id="selectedDate">
+                <button onclick="calculateDaily()">Get Daily Prognosis</button>
+            </div>
+        </div>
+        <!-- Section 3: Results -->
+<div id="section3" class="section hidden">
+    <div class="prognosis-date" id="prognosisDate"></div>
+    
+   <div class="results-container">
+    <div class="sphere">
+        
+        
+        <div class="sphere-content">
+            <p id="overallToneResult"></p>
+        </div>
+    </div>
+            
+    <div class="sphere" id="moneySphere">
+        <h3>Money Sphere</h3>
+        <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Money Sphere">
+        <div class="sphere-content">
+            <p id="moneyResult"></p>
+        </div>
+    </div>
+            
+    <div class="sphere" id="relationshipSphere">
+        <h3>Relationship Sphere</h3>
+        <img src="https://images.unsplash.com/photo-1516589178581-6cd7833ae3b2?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Relationship Sphere">
+        <div class="sphere-content">
+            <p id="relationshipResult"></p>
+        </div>
+    </div>
+            
+    <div class="sphere" id="healthSphere">
+        <h3>Health Sphere</h3>
+        <img src="https://images.unsplash.com/photo-1559757148-5c350d0d3c56?ixlib=rb-4.0.3&auto=format&fit=crop&w=150&q=80" alt="Health Sphere">
+        <div class="sphere-content">
+            <p id="healthResult"></p>
+        </div>
+    </div>
+</div>
+    
+    <div class="input-group">
+        <button onclick="saveResults()">💾 Save Prognosis</button>
+    </div>
+</div>
+
+        <!-- Section 4: Yearly Description -->
+        <div id="section4" class="section hidden">
+            <div class="prognosis-date" id="yearlyPrognosisDate"></div>
+            
+            <div class="sphere">
+                
+                <div class="sphere-content">
+                    <p id="yearlyDescriptionResult"></p>
+                </div>
+            </div>
+            
+            <div class="input-group">
+                <button onclick="saveYearlyResults()">💾 Save Yearly Prognosis</button>
+            </div>
+        </div>
+    </div>
+    <script>
+
+let currentCalendarMonth = new Date().getMonth();
+let currentCalendarYear = new Date().getFullYear();
+let selectedMonthValue = null;
+let birthData = {};
+
+// Check if birth date is already saved when page loads
+document.addEventListener('DOMContentLoaded', function() {
+    const savedBirthDate = localStorage.getItem('userBirthDate');
+    if (savedBirthDate) {
+        // Birth date already saved, skip to section 2
+        birthData = JSON.parse(savedBirthDate);
+        document.getElementById('section1').classList.add('hidden');
+        document.getElementById('section2').classList.remove('hidden');
+        
+        // Add permanent birth date message
+        const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+        const welcomeMsg = document.createElement('div');
+        welcomeMsg.innerHTML = `
+            <div style="background: rgba(76, 175, 80, 0.1); border: 2px solid #4caf50; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;">
+                <p style="color: #2e7d32; font-size: 1.1rem; margin: 0;">
+                    ✅ Calculations are made for: <strong>${savedDate}</strong>
+                </p>
+            </div>
+        `;
+        document.getElementById('section2').insertBefore(welcomeMsg, document.getElementById('section2').firstChild);
+    }
+    
+    // Only allow numbers in year inputs
+    const yearInputs = document.querySelectorAll('#prognosisYear, #prognosisYearMonthly');
+    yearInputs.forEach(input => {
+        input.addEventListener('input', function(e) {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+    });
+    
+    // Auto-format birth date input
+    document.getElementById('birthDate').addEventListener('input', function(e) {
+        let value = this.value.replace(/[^0-9]/g, '');
+        if (value.length >= 2) {
+            value = value.substring(0,2) + '/' + value.substring(2);
+        }
+        if (value.length >= 5) {
+            value = value.substring(0,5) + '/' + value.substring(5);
+        }
+        if (value.length > 10) {
+            value = value.substring(0,10);
+        }
+        this.value = value;
+    });
+});
+
+function showConfirmation() {
+    const birthDate = document.getElementById('birthDate').value;
+    if (birthDate.length !== 10 || !birthDate.includes('/')) {
+        alert('Please enter your full birth date in DD/MM/YYYY format');
+        return;
+    }
+    
+    const parts = birthDate.split('/');
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+    
+    if (!day || !month || !year || day < 1 || day > 31 || month < 1 || month > 12 || year < 1900) {
+        alert('Please enter a valid date');
+        return;
+    }
+    
+    // Store temporarily for confirmation
+    window.tempBirthData = { day, month, year };
+    
+    // Show confirmation
+    document.getElementById('confirmBirthDate').textContent = birthDate;
+    document.getElementById('birthDateInput').classList.add('hidden');
+    document.getElementById('confirmationSection').classList.remove('hidden');
+}
+
+function saveBirthDate() {
+    const checkbox = document.getElementById('confirmCheckbox');
+    if (!checkbox.checked) {
+        alert('Please confirm that this is your correct date of birth');
+        return;
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('userBirthDate', JSON.stringify(window.tempBirthData));
+    birthData = window.tempBirthData;
+    
+    // Hide section 1 and show section 2
+    document.getElementById('section1').classList.add('hidden');
+    document.getElementById('section2').classList.remove('hidden');
+    
+    // Add permanent birth date message
+    const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+    const welcomeMsg = document.createElement('div');
+    welcomeMsg.innerHTML = `
+        <div style="background: rgba(76, 175, 80, 0.1); border: 2px solid #4caf50; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;">
+            <p style="color: #2e7d32; font-size: 1.1rem; margin: 0;">
+                ✅ Calculations are made for: <strong>${savedDate}</strong>
+            </p>
+        </div>
+    `;
+    document.getElementById('section2').insertBefore(welcomeMsg, document.getElementById('section2').firstChild);
+}
+
+function goBackToEdit() {
+    document.getElementById('confirmationSection').classList.add('hidden');
+    document.getElementById('birthDateInput').classList.remove('hidden');
+    document.getElementById('confirmCheckbox').checked = false;
+}
+
+function showCalculationInputs() {
+    const calculationType = document.getElementById('calculationType').value;
+    
+    // Hide all input sections
+    document.getElementById('yearlyInputs').classList.add('hidden');
+    document.getElementById('monthlyInputs').classList.add('hidden');
+    document.getElementById('dailyInputs').classList.add('hidden');
+    
+    if (calculationType === 'yearly') {
+        document.getElementById('yearlyInputs').classList.remove('hidden');
+    } else if (calculationType === 'monthly') {
+        document.getElementById('monthlyInputs').classList.remove('hidden');
+    } else if (calculationType === 'daily') {
+        document.getElementById('dailyInputs').classList.remove('hidden');
+        generateCalendar();
+    }
+}
+
+function selectMonth(month) {
+    // Remove previous selection
+    document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
+    // Add selection to clicked month
+    event.target.classList.add('selected');
+    selectedMonthValue = month;
+    document.getElementById('selectedMonth').value = month;
+}
+
+function generateCalendar() {
+    const monthNames = ["January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    
+    document.getElementById('calendarTitle').textContent = `${monthNames[currentCalendarMonth]} ${currentCalendarYear}`;
+    
+    const firstDay = new Date(currentCalendarYear, currentCalendarMonth, 1).getDay();
+    const daysInMonth = new Date(currentCalendarYear, currentCalendarMonth + 1, 0).getDate();
+    
+    let calendarHTML = '';
+    
+    // Add day headers
+    const dayHeaders = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    dayHeaders.forEach(day => {
+        calendarHTML += `<div style="font-weight: bold; padding: 10px; text-align: center;">${day}</div>`;
+    });
+    
+    // Add empty cells for days before month starts
+    for (let i = 0; i < firstDay; i++) {
+        calendarHTML += '<div class="calendar-day disabled"></div>';
+    }
+    
+    // Add days of the month
+    for (let day = 1; day <= daysInMonth; day++) {
+        calendarHTML += `<div class="calendar-day" onclick="selectDate(${day})">${day}</div>`;
+    }
+    
+    document.getElementById('calendarGrid').innerHTML = calendarHTML;
+}
+
+function changeMonth(direction) {
+    currentCalendarMonth += direction;
+    if (currentCalendarMonth > 11) {
+        currentCalendarMonth = 0;
+        currentCalendarYear++;
+    } else if (currentCalendarMonth < 0) {
+        currentCalendarMonth = 11;
+        currentCalendarYear--;
+    }
+    generateCalendar();
+}
+
+function selectDate(day) {
+    // Remove previous selection
+    document.querySelectorAll('.calendar-day').forEach(cell => cell.classList.remove('selected'));
+    // Add selection to clicked day
+    event.target.classList.add('selected');
+    
+    const selectedDate = `${day.toString().padStart(2, '0')}/${(currentCalendarMonth + 1).toString().padStart(2, '0')}/${currentCalendarYear}`;
+    document.getElementById('selectedDate').value = selectedDate;
+}
+
+function reduceToArcana(number) {
+    while (number > 22) {
+        let sum = 0;
+        while (number > 0) {
+            sum += number % 10;
+            number = Math.floor(number / 10);
+        }
+        number = sum;
+    }
+    return number;
+}
+
+function sumDigits(number) {
+    let sum = 0;
+    while (number > 0) {
+        sum += number % 10;
+        number = Math.floor(number / 10);
+    }
+    return sum;
+}
+
+
+function calculateYearly() {
+    const year = parseInt(document.getElementById('prognosisYear').value);
+    if (!year || year < 1900 || year > 2100) {
+        alert('Please enter a valid year');
+        return;
+    }
+    
+    // D1+D2+M1+M2+target year digits
+    const birthSum = sumDigits(birthData.day) + sumDigits(birthData.month);
+    const yearSum = sumDigits(year);
+    const result = birthSum + yearSum;
+    const arcanaNumber = reduceToArcana(result);
+    
+    displayYearlyResults(year, arcanaNumber);
+}
+
+function calculateMonthly() {
+    const year = parseInt(document.getElementById('prognosisYearMonthly').value);
+    if (!selectedMonthValue || !year || year < 1900 || year > 2100) {
+        alert('Please select a month and enter a valid year');
+        return;
+    }
+    
+    // D1+D2+M1+M2+target year+target month
+    const birthSum = sumDigits(birthData.day) + sumDigits(birthData.month);
+    const yearSum = sumDigits(year);
+    const monthSum = sumDigits(selectedMonthValue);
+    const result = birthSum + yearSum + monthSum;
+    const arcanaNumber = reduceToArcana(result);
+    
+    const monthNames = ["", "January", "February", "March", "April", "May", "June",
+        "July", "August", "September", "October", "November", "December"];
+    
+    displayResults('Monthly', `${monthNames[selectedMonthValue]} ${year}`, arcanaNumber);
+}
+
+function calculateDaily() {
+    const selectedDate = document.getElementById('selectedDate').value;
+    if (!selectedDate) {
+        alert('Please select a date from the calendar');
+        return;
+    }
+    
+    const parts = selectedDate.split('/');
+    const day = parseInt(parts[0]);
+    const month = parseInt(parts[1]);
+    const year = parseInt(parts[2]);
+    
+    // D1+D2+M1+M2+target day+target month+target year
+    const birthSum = sumDigits(birthData.day) + sumDigits(birthData.month);
+    const targetSum = sumDigits(day) + sumDigits(month) + sumDigits(year);
+    const result = birthSum + targetSum;
+    const arcanaNumber = reduceToArcana(result);
+    
+    displayResults('Daily', selectedDate, arcanaNumber);
+}
+
+    
+    
+function displayResults(type, dateInfo, arcanaNumber, yearDescription = null) {
+    document.getElementById('prognosisDate').textContent = `${type} Prognosis for ${dateInfo} | Arcana ${arcanaNumber}`;
+
+    if (type === 'Monthly') {
+        // Monthly forecast structure
+        const monthlyForecasts = {
+            1: `<strong>Your Month Number is 1! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    Good relationships with brothers and sisters, the younger generation, students, and interns. Success in forming business partnerships, launching new projects, signing important contracts and documents, and gaining or sharing knowledge.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Betrayal by siblings, students, or younger people; difficult fate for brothers and sisters if you don't stay involved in their lives. Mistakes in paperwork, financial losses, risk that a new venture won't grow. Signs of fraud or failure in a young business.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Now is the perfect time to start something new! It's time to leave the old behind and move into a new direction. Each of us has a purpose — are you sure you're in the right place? It's crucial to find your true path. This is the season for new deals and profitable offers. And yes, now is the moment to invest boldly in your self-development and say "YES" to new opportunities!<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    A new stage in relationships is coming. If you're single, you may meet your soulmate. If you're already in a relationship, expect a deeper level of closeness. This month might also bring a move, a proposal, or even a wedding.<br><br>
+    <strong>Health Sphere:</strong><br>
+    New "programs" are being installed in you, so you might get sick without a clear reason. Your immunity may weaken, so pay close attention to how you feel and avoid overworking yourself.`,
+    2: `<strong>Your Month Number is 2! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    Good relationships with your mother, her strong health, and support from women around you. Success in professions related to beauty and health. This month favors conception and childbirth — most often girls.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Conflicts with your mother, her illness, betrayal by women, and work disruptions caused by women's influence. Poor health, intrigue, gossip at work, and deception by women. Old hurts that need forgiveness.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This month, you'll easily find common ground with business partners, colleagues, and bosses. Women from your family or those in higher positions — like teachers, supervisors, your mother or grandmother — may help you succeed. Your intuition will begin to develop strongly, so be sure to listen carefully to yourself.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    This month, relationships with everyone around you will reflect your own weak spots back at you — it's important to recognize and work on them. Avoid falling into provocations or conflicts. Be honest with yourself and others. Don't quarrel with loved ones or those close to you. Pay special attention to your mother and the women in your family line. You may also experience family patterns playing out. The key is to learn forgiveness and not hold grudges. Also, strive to communicate and reach agreements with your partner and people around you.<br><br>
+    <strong>Health Sphere:</strong><br>
+    There is a possibility of conception and childbirth, most likely girls. Pay close attention to the health of women in your family — yourself, your mother, and your grandmother. Also, make sure to keep a close watch on your gynecological health this month.`,
+
+
+            3: `<strong>Your Month Number is 3!</strong><br><br>
+
+<strong>Positive Aspects ⤵️</strong><br>
+This is a very favorable month to start your own project, business, or education. You can expect good relationships with children and success in your career and business. Women may enter your life who will have a positive influence on your growth. If you’ve been meaning to sign important contracts, this is the perfect time to do so.<br><br>
+
+<strong>Challenging Aspects ⤵️</strong><br>
+There could be difficulties with conception or illness affecting children. These issues might cause important plans to fall through — even those that seemed unbreakable. Also, there may be misunderstandings with your mother-in-law or wife’s mother, so try to avoid conflicts.<br><br>
+
+<strong>Health Sphere:</strong><br>
+You’re likely to have a very successful month healthwise, especially regarding creativity, new projects, contracts, or a business involving women or for women — everything should flourish!<br>
+Also, you might receive government support payments — don’t miss out on these opportunities 🙌🏻<br>
+There is a high chance of conception or childbirth this month. If you are a woman, pay close attention to your reproductive health to avoid complications or miscarriage.<br><br>
+
+<strong>Relationship Sphere:</strong><br>
+Romantic relationships with the opposite sex are on the horizon — get ready for dates and new connections 💞<br>
+If you have children, your relationship with them will improve steadily. And if you want to have a child, this month offers a good chance for conception.<br>
+Remember to keep balance between family and work — avoid leaning too much towards one side. Also, nurturing good relationships with the women in your circle, especially your mother-in-law or mother, and avoiding conflicts is very important.`,
+            
+            4: `<strong>Your Month Number is 4! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    Success in your career, business, and work. Expect financial and material stability, new professional opportunities, or even starting your own business. Being actively involved in important tasks will bring support from colleagues, successful deals, and winning contracts.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Potential setbacks like career or business failure, job loss, or demotion. You might face betrayal or underhanded moves from colleagues, failed deals or contracts, and delayed or missing payments. Relationships with your father could be difficult, with feelings of hurt or betrayal. Also, watch out for health issues caused by overwork and exhaustion.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    You will have many chances to earn money this month, but don't take on everything at once. Approach projects and investments wisely to see the best results. This is a great month to sign contracts, close deals, or buy and sell property.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Your family might need your help and place extra responsibilities on you. Fatigue could make you more impatient or sharp with others. Conflicts or misunderstandings with your father may arise — be careful what you say so you don't regret it later.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Chronic health problems might resurface. Don't overwork yourself — rest and recovery are essential. Remember to delegate tasks and avoid taking on more than you have the energy for.`,
+            5: `<strong>Your Month Number is 5! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month brings support from men, guidance from mentors or supervisors, and success in gaining knowledge or advancing spiritually. You may thrive in any work with a higher purpose. Expect recognition and status in your career—though it may not reflect in your income just yet. Conflicts tend to be resolved fairly, guided by wisdom rather than rigid rules. There's also a high chance you'll be sharing your knowledge or teaching others this month.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Watch for health issues in your father or older male relatives. Conflicts or betrayals involving leadership figures, bosses, or mentors are possible. Some plans or processes may stall or fall apart unexpectedly ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This month should be financially favorable. Your efforts will be recognized and appreciated, and any unresolved or unclear situations will be sorted out—based on fairness.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    It's a great month for meeting new people, networking, and joining new social circles. Just be mindful not to place too many expectations on your new connections. You might even meet a spiritual guide or teacher. And if you're invited to travel—definitely say "YES." Also, make time for your father and maintain positive relationships with men in general. Avoid conflicts with them.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Take good care of your health—your body is your temple. If you're in the habit of eating fast food, now's the time to stop and switch to healthier choices. Create a daily routine and stick to it. Most importantly, focus on your spiritual development—it will recharge your energy and help you reach new heights.`,
+
+            6: `<strong>Your Month Number is 6! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month centers around love, family, and emotional harmony. You might experience deep family bonding, the birth of a child, or major success in your personal life. It's a great time for signing long-term contracts, forming lasting partnerships, or even starting a family business. Any conflicts that arise will likely be resolved quickly and peacefully.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Potential difficulties include illness, divorce, infidelity (both romantic and professional), broken deals, or betrayal at work. You might face emotional closure, a lack of trust, or issues with the reproductive system.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Nobody's perfect — accept your flaws and allow yourself to make mistakes at work. Don't be overly critical of yourself or others. Avoid provoking negativity and don't let yourself be pulled into it. Also, listen to your intuition — it will be your best guide this month. If you run a business, now is a good time to reward your employees, either with kind words or generous bonuses. And if you're employed, bring a positive attitude, suggest creative projects, or organize a team outing — a nature trip could be perfect.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Love is in the air 💞…New romantic opportunities may appear, so be open to dating and making new connections. But be careful not to fall into a love triangle. Set clear boundaries from the start, don't be swayed by charming words — pay attention to actions. If you're already in a relationship, remind yourself that no one is perfect. Avoid nitpicking your partner. See things as they truly are, not through rose-colored glasses — otherwise, disappointment may follow. Remember: there's a thin line between love and resentment. Also, stop trying to impress others with an ideal image of your relationship — live for what's real.<br><br>
+    <strong>Health Sphere:</strong><br>
+    You may experience emotional breakdowns, anxiety, depression, migraines, or a general sense of imbalance. You might even feel inspired to start a new diet or work on your body shape. This is a great time for self-care — spa treatments or even relaxing in a massage chair can do wonders. Strive for harmony in both body and soul. Avoid temptations and don't fall into addictions. Watch your health carefully — allergies may flare up, and a common cold could turn into something more serious like tonsillitis. Also, there's a chance of pregnancy or learning that you're expecting.`,
+
+            7: `<strong>Your Month Number is 7!</strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month brings success in work, career, and personal achievements. New paths will open, and you'll find yourself making confident moves toward your goals. Expect opportunities for travel, relocation, or frequent short trips. You're likely to scale new heights with ease .<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Be bold and decisive — but avoid overextending yourself or acting out of pride. Otherwise, you risk turning your drive into unnecessary heroism. Misjudgments or reckless actions could lead to unintended setbacks ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    You don't need to fight for your place in the world — it's already yours. Stay focused on your goals, remain alert, and keep track of your time and commitments. Quick, confident decisions will bring rewards — don't overthink beneficial opportunities when they show up. At the same time, don't let yourself burn out. Stick to a healthy work rhythm and preserve your energy for what truly matters.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    If you're in a relationship, resist the urge to jump to conclusions or pressure your partner into big decisions. Time constraints may cause some distance or difficulty in communication. Consider taking a peaceful break together — a weekend getaway or quiet time away from the rush. If you're single, don't settle just because someone shows interest. Be patient, trust your instincts, and hold out for someone who genuinely aligns with your values.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Focus on healthy habits — especially your diet, speech, and letting go of harmful behaviors. Now is a great time to commit to fitness. Signing up for a gym membership or starting a regular workout routine will serve you well .Stay mindful of your physical health. Joint issues, flare-ups of osteochondrosis, or dental discomfort could surface. Take preventive steps now to avoid bigger problems later.`,
+
+            8: `<strong>Your Month Number is 8!</strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month brings powerful support in all legal and governmental matters. You could see success in court, profitable deals on your terms, inheritances, or help from official institutions. Conflicts are likely to resolve in your favor. You may also notice a "domino effect" — one positive event triggering another.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Be prepared for potential legal setbacks: fines, unjust court rulings, conflicts with authorities, or issues with official documents. There's also a risk of betrayal, deceit, or wrongful accusations — even legal trouble or imprisonment in extreme cases. Some situations may take sudden turns against you. Misfortune might feel like it's coming in waves, so stay grounded ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Now is the time to establish your authority — don't let others take advantage of your energy or generosity. Use your power wisely, not to dominate or manipulate. Integrity is key: live by your values and follow the rules. Consider enrolling in financial literacy courses to upgrade your mindset. It's also an excellent moment to register your business or launch a new one legally and properly. ⚠️ Avoid working yourself to exhaustion in pursuit of status or money. Remember — you can't earn it all.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    If you're in a relationship, this is a great month to take things to the next level — possibly even formalize your commitment. Also, don't hold back from treating yourself or honoring your desires. Embrace change, respect your own time and your partner's. Trust, honesty, and transparency will form the foundation of lasting love. If you're single, use this time for inner reflection and re-evaluating what truly matters in a partner.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Watch your emotional balance. Don't let guilt or negative thoughts spiral — they could weaken your immune system or upset your digestive health. Also, limit screen time. Excessive use of your phone or computer may strain your vision.`,
+
+            9: `<strong>Your Month Number is 9! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month favors personal growth and solo projects. You're likely to experience spiritual breakthroughs and may even unlock intuitive or extrasensory abilities. It's a powerful time for exploring esoteric knowledge or alternative practices. Support for your parents or elder family members will bring deep fulfillment.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    You may experience emotional or physical distance from loved ones — even temporary isolation due to illness or grief. There's a risk of unemployment, disconnection from social life, or setbacks in team-based projects. Right now, self-reliance is key. Don't count on outside help — your best success will come from working independently ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This is the ideal time to pursue solo ventures or request an independent project at work. Before jumping into anything, take time to think things through carefully. Avoid giving unsolicited advice — instead, practice patience and wisdom. View life as an opportunity, not a set of limitations. And if you receive praise or recognition, stay humble. Don't assume you're above others — stay grounded and grateful. This month, trust in your partner becomes essential. Aim to reach mutual understanding with just a glance or word. Find harmony in your shared quiet moments. You may also feel the urge to reinforce your personal boundaries and honor your emotional space.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    If you're single, celebrate your freedom! This is a beautiful time to focus on your desires, heal emotional wounds, and spend meaningful time with your friends. Use this solo space to reconnect with yourself and enjoy your independence fully.<br><br>
+    <strong>Health Sphere:</strong><br>
+    It's the perfect moment to take your health seriously. Schedule a full-body check-up and don't ignore any lingering issues. Also, be mindful not to internalize others' pain or stress. Protect your emotional energy. Pamper yourself: treat your hair, visit a skincare professional, or indulge in holistic self-care. If you're a parent, keep a close eye on your children's health — they may be more vulnerable this month.`,
+
+            10: `<strong>Your Month Number is 10! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    You can expect success in financial matters, including winnings, advantageous deals, repayment of debts, and an influx of funds. Success will come in trading, obtaining loans, generating profit, and favorable buying and selling opportunities. Frequent relocations, including potential moves abroad, are also indicated.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There may be financial outflows, significant debts, losses, thefts, frozen assets, or even business failure. Progress may be impeded, and life may seem to come to a halt ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    It is advisable to review your schedule to ensure it is as flexible and accommodating to your needs as possible. The optimal approach would be to take an unexpected leave of absence and entrust any unfinished work to a reliable colleague. Please remember that excessive control does not eliminate the possibility of mistakes. This is also a favorable period to request a salary increase. If you are engaged in business, launching a new project at this time is likely to bring guaranteed success.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    You may feel a desire to rise above everyday concerns, experience a sense of lightness and ease, and radiate joy. There might also be an unexpected urge to travel to distant seaside locations. If you are already in a relationship, strive this month to be a true inspiration and muse for your partner. Elevate your relationship to a new level by organizing romantic dinners and creating engaging shared experiences. Your current condition may attract new acquaintances, and light flirtations may develop either into a strong, lasting partnership or a brief holiday romance.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Even the most fortunate individuals may encounter health issues at times. Please pay attention to seasonal factors: during warm periods, avoid prolonged exposure to air conditioning; during colder times, ensure you dress warmly to prevent respiratory problems. Additionally, refrain from excessive consumption of various beverages, as this may lead to swelling and gastrointestinal issues. Avoid prolonged sitting, as this can cause circulatory problems that may result in varicose veins.`,
+
+            11: `<strong>Your Month Number is 11! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month brings powerful momentum in your business and career. Expect success in competitive situations — whether it's winning a debate, outshining your rivals, or securing a high-stakes deal. The results will likely exceed your expectations, and you may receive more than you were promised. You'll feel energized and strong — capable of working long hours and pushing through challenges. This is your time to rise to a new level. Charity and acts of kindness are especially favored now. The more you give, the more abundance flows back to you 💞<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Beware of hidden enemies — if you take an aggressive stance, you could lose. You may encounter betrayal, power struggles, or even physical altercations. Medical mishaps, injuries, or surgery complications are also possible, so be cautious ❌ You might feel bursts of aggression or frustration. Don't let anger control you — channel that energy into constructive action.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    You're set to achieve major financial goals — especially through bold initiatives or competitive ventures. But be careful not to let pride or ego sabotage your progress. Avoid overworking for the sake of status or recognition. Instead, lead with integrity and generosity. Share your success and support others — this will magnify your abundance. If you're considering a major investment or contract, make sure everything is clear and legal. Double-check fine print and avoid risky decisions this month.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    This is a month to stay humble and patient in your personal connections. If ego creeps into your communication, misunderstandings could escalate into arguments. Practice emotional self-control and compassion — especially during intense moments. If you're in a relationship, balance assertiveness with tenderness. If you're single, don't push too hard to make something happen — let things evolve naturally. You have the capacity to be a powerful influence on those around you this month. Use that energy to uplift, not dominate.<br><br>
+    <strong>Health Sphere:</strong><br>
+    This is not a great time for surgery or invasive procedures — avoid them unless absolutely necessary. With such high energy, physical activities like sports, hiking, or yoga will help you release tension and keep your body and mind in balance. Beware of accidents — fractures, bruises, or muscle strains are more likely if you ignore your limits. Also, steer clear of heated environments or aggressive individuals who may try to provoke you. Learn to express your emotions constructively — this will help regulate your nervous system and prevent burnout.`,
+
+           12: `<strong>Your Month Number is 12! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    You can expect public recognition, expanding your social circle, and support from both strangers and loved ones. A creative breakthrough is coming — a time to truly find and express yourself.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There may be relationship struggles like divorce or depression, misunderstandings, and public criticism. You might find yourself playing the victim or sacrificing too much. Betrayal by close people is possible, as well as lingering painful situations, deep depression, feelings of emptiness, or even suicidal thoughts.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Money could come through creativity, new perspectives, and selfless service. This month is great for launching something new — a project, a fresh approach, an artwork, or an event. The key is not to hesitate, but to take action!<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    People around you will ask for help, and you may find it hard to say no. It's important to give and support others, but don't forget about yourself. Remember, you are the most important person in your life. Learn to love and care for yourself first — then you'll be able to give more to others.<br><br>
+    <strong>Health Sphere:</strong><br>
+    You might experience a depressive state this month and feel the need to withdraw or escape. To ease this, try vocal and body practices throughout the day. Morning chants, mantras, yoga, and massages can help you start the day lighter and more balanced.`,
+
+            13: `<strong>Your Month Number is 13! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month, you will attract transformation and change — and it will happen in a mysterious, almost magical way. Your old habits and beliefs will evolve into new, more progressive versions. Don't worry, everything will unfold smoothly and naturally.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Plans might fall apart, and it may feel like the ground is slipping away beneath your feet.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Allow yourself to finally step into the field that truly calls to your soul. Don't be afraid to show yourself, start a business, or enter into a partnership.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Relationships will reach a new level. This is a great month to make your union official, expanding and deepening your bond. If you're single, you might meet your soulmate.<br><br>
+    <strong>Health Sphere:</strong><br>
+    You have the chance to improve your health this month. Get a full check-up, work on your diet and sleep habits. Remember, your body is a temple — care for it, and it will reward you with gratitude.`,
+
+            14: `<strong>Your Month Number is 14! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month will go just as you planned. Everything will flow easily, bringing you harmony, calm, and a deep sense of peace.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    You might constantly feel like something is missing. No matter what positive things come your way, there will be a lingering sense that it could be better or more. It's time to learn wisdom and moderation.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Work on overcoming greed and attachment to material things, or else a steady financial flow might elude you.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Learn to listen, negotiate, and compromise with your partner and those around you. Avoid emotional ups and downs and aggression, or you risk getting caught up in constant conflicts.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Visit a doctor and get a thorough check-up this month — there's a risk of hard-to-diagnose health issues.`,
+
+            15: `<strong>Your Month Number is 15! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    Many gifts from fate await you. This could be good relationships, a promotion at work, increased status, fame, and promising financial prospects. Plus, your personal life will be bright and passionate this month.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    You might face a love triangle, a lack of warmth in relationships, jealousy, manipulation, dark influences, temptations, or addictions. Any event in life can become a barrier and a test. It's important to resist temptations and live with honesty and integrity.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Right now is an excellent moment to step into the spotlight, make yourself seen, and aim for high status! Success in any area, fame, popularity, and good luck are all on your side.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    This is a warm and romantic phase in your relationships. If you have a partner, try to care for them more and be attentive to their needs. Don't let quarrels create distance between you.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Addictions, bad habits, and an unhealthy lifestyle will especially undermine your health this month — from a weakened immune system to potential venereal diseases. Focus on living a healthy lifestyle.`,
+
+            16: `<strong>Your Month Number is 16! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This is a great month to buy property or start building. Success in your career and business growth are on the horizon, along with personal and spiritual development. Expect travel, moves, and reconciliation in relationships.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    You might face financial losses, setbacks in business or career, divorce or breakups, and conflicts. Emotional exhaustion, failed surgeries, accidents, and other negative changes are possible, so be cautious.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Invest your money in personal growth, improve and develop your projects and work — this will create favorable conditions for success.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Avoid letting your emotions run wild — too much emotional intensity can damage relationships. Learn to communicate with your partner in ways that make your bond stronger.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Stay active, take care of your health, reduce your sugar intake, and be extra careful on the roads.`,
+
+            17: `<strong>Your Month Number is 17!</strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month, success awaits you in your favorite pursuits. It is also an excellent time for creative and spiritual growth. Pay close attention to all signs of fate and the Universe's guidance. Many of your wishes may come true very quickly ✨<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There is a possibility of shattered hopes and plans. You may experience a creative or personal development crisis, pessimism, low energy, laziness, apathy, and a loss of internal direction—goals and motivation.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This is a wonderful period to start earning from what you love. Your hobby might become your profession, leading you to recognition. Luck will accompany you if you focus on your unique and unconventional ideas. Be bold and let yourself shine!<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    This is a hopeful and joyful time for relationships. Build a strong, trusting connection with your partner and friends. Be sure to give your significant other your full attention. Spend more time together and make it a habit to plan extraordinary dates. If you are currently single, new romantic encounters are possible.<br><br>
+    <strong>Health Sphere:</strong><br>
+    This month brings improvements in health, a joyful state of mind, abundant energy, and inspiration. Maintain a positive attitude and avoid overworking yourself. Dedicate time to meditation and mindfulness practices to stay calm and centered. If you are prone to allergies, be especially cautious.`,
+
+            18: `<strong>Your Month Number is 18! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    You may experience heightened sensitivity and emotionality, which will support your creativity and encourage profound inner work. Cultivate positive thinking and focus only on visualizing positive outcomes. Learn to trust those around you! Avoid isolating yourself; engage in social interactions and build new connections. You might also develop an interest and aptitude for esoteric knowledge, with insights potentially coming to you through dreams.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There may be complications involving love or business triangles, romances, deception, infidelity, hypocritical relationships, illusions, and impulsive or unexplainable actions. You may also experience fear, a desire to withdraw, nervousness, and uncertainty in your relationships. It is important not to make any major decisions during this time ❌<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Conduct your business legally, adhere to laws, and pay your taxes! Hidden enemies and unseen dangers are possible. Be mindful of your words and actions, and strive to overcome any fears. Do not deceive or stray from your true path; remain focused and determined in pursuing your goals.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    If you are currently single, consider going on a date — there is a chance you may meet your soulmate ❤️ If you are in a relationship, take a walk with your loved one and have a heartfelt conversation. The evening promises to be beautiful and romantic.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Pay close attention to your health, and it would be beneficial to have a comprehensive medical check-up. Also, monitor your mood swings, avoid falling into depression, and try to stay calm. Make efforts to diversify your daily routine. Recharge your energy and direct it towards your personal growth and goals.`,
+
+            19: `<strong>Your Month Number is 19! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    You may experience harmonious relationships with relatives, strengthened family bonds, the establishment of traditions, and frequent family celebrations. Success is also likely in your career, work, and personal life. This period favors a happy marriage, strong family ties, the arrival of a child, and successful parenting. Additionally, expect growth in new ideas, self-expression through creativity, achievement of your goals, public recognition, and success and support in business.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There may be quarrels and disagreements with loved ones, reputation issues, financial difficulties, business losses, and emotional exhaustion. Problems with children, family discord, divorce or long-distance relationships, difficulties with conception and parenting, lack of plans and goals, and an inability to enjoy life are also possible.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    Launch new projects—luck will be on your side. Make profitable deals and introduce innovations based on people's needs. This month promises to be financially rewarding. Maintain optimism, even in setbacks. Manage your emotions carefully and avoid irritability and arrogance.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Do not avoid social interactions: spend time with family and meet friends—this will give you extra energy. Show attentiveness to your partner, as this month may bring improvements in your relationship, marriage, conception, or the birth of a child. If you are currently single, a fateful encounter is possible. Stay open to new connections.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Remember that prolonged sun exposure carries risks of burns or heat/sunstroke. Avoid excessive workaholism and monitor your emotional well-being to prevent burnout.`,
+
+            20: `<strong>Your Month Number is 20! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    You can look forward to enjoyable time spent with your mother, strong relationships with the women in your family line, and their support. Luck will favor careers related to beauty and health. There is also a possibility of conception and childbirth, more often girls 🤍<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    Tensions may arise in your relationships with your mother and female relatives. There could be health issues affecting women in your family, negative attitudes from women, and disruptions in your affairs caused by their interference. Additionally, you might experience health setbacks, rumors within your circle, dishonesty from women, and reproaches that you need to learn to let go of.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This month, you will enjoy excellent understanding and cooperation with business partners, colleagues, and higher-ups. You will feel the support of women in your professional matters—whether they are women from your family or women of higher status such as a teacher, boss, mother, grandmother, etc. Additionally, your intuition will strengthen, so take time to listen to yourself.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Focus on the quality of your relationships with everyone around you this month. They will reveal areas that need your attention and work. It is crucial to recognize these and address them. Expect provocations and conflicts; be prepared to step away from them. The key is to remain honest with yourself and others. Avoid arguments with family and your social circle, and pay special attention to your mother and the women in your family line. Life patterns from your family history may resurface this month. The most important thing is to learn to release grudges and forgive. Also, seek compromises with your partner and those around you.<br><br>
+    <strong>Health Sphere:</strong><br>
+    Pregnancy and childbirth are possible (more often girls). Focus on your feminine health and also pay special attention to the health of the women in your family (mother, grandmother, etc.).`,
+
+            21: `<strong>Your Month Number is 21! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month brings opportunities for travel, business trips, relocation, new connections, project growth, and success. You can also expect support from professional women, progress in learning foreign languages, and the potential beginning of a relationship with a foreigner.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    There may be difficulties involving children, strained relationships with your mother and other women, fears and emotional instability, both internal and external limitations, as well as setbacks with international projects and trips.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This is an excellent time to launch a major new project, collaborate with international partners, undertake business trips, handle overseas assignments, and work closely with women. Profitable offers and successful partnerships are likely, so be sure not to miss these opportunities.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    Maintain a healthy balance between your career and family life; avoid leaning too heavily toward either side. On a positive note, expect increased attention and interest from the opposite sex—there may even be introductions to foreigners and valuable gifts.<br><br>
+    <strong>Health Sphere:</strong><br>
+    There is a high chance of conceiving or giving birth to a child. However, for some, the opposite might occur — issues related to women's health may arise, such as difficulties with conception — keep that in mind. Also, watch your diet — there is a chance of developing allergies.`,
+
+            22: `<strong>Your Month Number is 22! </strong><br><br>
+    <strong>Positive Aspects ⤵️</strong><br>
+    This month is ideal for launching a new project—one that could bring valuable experience and learning. You'll likely find success in searching for a new job or mastering a new skill. Expect frequent meetups with friends, uplifting events, and unexpected joy.<br><br>
+    <strong>Challenging Aspects ⤵️</strong><br>
+    You may experience emotional ups and downs, heightened anxiety, irritability, or even temptation to escape into unhealthy habits. There could also be family tensions, issues involving children, domestic troubles, or things breaking down.<br><br>
+    <strong>Financial Sphere:</strong><br>
+    This is a great time for fresh starts and job hunting—but it's equally important to release what no longer serves you. Take responsibility, set clear goals, and take active steps toward achieving them. At the same time, maintain an optimistic and light-hearted approach. Be especially mindful and responsible in business matters, agreements, partnerships, and finances. Honor your promises and obligations carefully.<br><br>
+    <strong>Relationship Sphere:</strong><br>
+    If you're currently single, there's a strong chance of love at first sight. If you're in a relationship or have a family, expect joyful moments and positive experiences—especially those connected to children. One thing to watch out for: don't try to control your partner. It could damage the relationship. Instead, give them space and respect their opinions and views.<br><br>
+    <strong>Health Sphere:</strong><br>
+    There's a risk of becoming indifferent toward your health—but that's something to absolutely avoid ❌ Keep a close eye on your emotional and mental state. Focus on positivity, or you may find yourself dealing with burnout.`,
+
+        };
+document.getElementById('overallToneResult').innerHTML = monthlyForecasts[arcanaNumber] || "A unique monthly energy that requires deeper interpretation.";
+document.getElementById('overallToneResult').innerHTML = monthlyForecasts[arcanaNumber] || "A unique monthly energy that requires deeper interpretation.";
+
+// Hide the separate spheres for monthly forecasts
+document.getElementById('moneySphere').style.display = 'none';
+document.getElementById('relationshipSphere').style.display = 'none';
+document.getElementById('healthSphere').style.display = 'none';
+
+
+    } else if (type === 'Daily') {
+        // Daily forecast structure
+        const dailyForecasts = {
+            1: `<strong>Your Day Number is 1! </strong><br><br>
+
+<strong>Today’s Vibe ⤵️</strong><br>
+New ideas may come your way today — be sure to jot them down so you don’t forget. This day is perfect for new beginnings, but always trust your inner intuition to guide you in the right direction.<br><br>
+
+<strong>Recommendations</strong><br>
+✨ Overcome aggression and egoism — learn to consider others' interests and stop focusing solely on yourself.<br>
+✨ Be more accommodating and seek compromises with those around you.<br>
+✨ Reach out to your siblings today — call, meet, or visit them.<br>
+✨ Be decisive and goal-oriented. Don’t doubt your path.<br>
+✨ Write down your goals and dreams for the coming month and year.<br><br>
+
+<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;">
+
+<strong>Financial Sphere:</strong><br>
+Today is ideal for starting a new venture. It’s time to leave old patterns behind and boldly step into new opportunities.<br>
+Trust your purpose and make decisions that align with your true path.<br>
+Signing new deals and investing in self-development will bring positive results.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Relationship Sphere:</strong><br>
+A new chapter begins in your relationships.<br>
+Singles may meet a significant other, and couples might deepen their bond.<br>
+Possibilities include moving, proposals, or weddings.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Health Sphere:</strong><br>
+You may feel a bit off as new “programs” download within you — be mindful of your immune system.<br>
+Avoid overworking and take time to rest and recharge.<br>`,
+    2: `<strong>Your Day Number is 2! </strong><br><br>
+
+<strong>Today’s Vibe ⤵️</strong><br>
+Treat yourself to a coffee and something delicious today. Invite friends along and enjoy good company.<br><br>
+
+<strong>Recommendations</strong><br>
+✨ Clear and beautiful speech will open doors — practice it or consider joining a course.<br>
+✨ Spend quality time with female relatives — your mother, sister, or grandmother.<br>
+✨ If possible, gather your loved ones for a heartfelt conversation.<br><br>
+
+<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;">
+
+<strong>Financial Sphere:</strong><br>
+Listen closely to your inner voice — it will guide you to the best decisions.<br>
+Women in your family line may offer unexpected support today.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Relationship Sphere:</strong><br>
+Watch how people behave around you — they might reveal your weak points that need attention.<br>
+Avoid manipulation; some may try to control you.<br>
+If you can, spend time with your female relatives and share your feelings openly.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Health Sphere:</strong><br>
+Pay close attention to your health and that of the women in your family.<br>
+It’s a good day to check in on your feminine or masculine health.<br>`,
+
+
+            3: `<strong>Your Day Number is 3! </strong><br><br>
+
+  <strong>Today's Vibe ⤵️</strong><br>
+  Today is a wonderful day to spend quality time with your family. Speak kind and loving words to your husband and children, surround them with care and warmth.<br>
+  If you don’t have children yet, go to a park, watch kids playing, enjoy the moment, and delight in their carefree spirit .<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Besides family time, don’t forget to treat yourself. Refresh your wardrobe, buy yourself something special — a piece of fine jewelry, a watch, or elegant accessories like a bag, belt, or phone case. Pamper yourself today.<br>
+  ✨ Take a risk and challenge yourself: share your beautiful mood on social media. Express yourself boldly and confidently! No need to hesitate — you’ve got this.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;">
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Today brings fertility, abundance, and success in creative pursuits. It’s a great day to start new projects, sign long-term contracts, or launch a business focused on women — connections with women will help you move forward.<br>
+  You might also receive support from the government, such as maternity benefits. Don’t miss any profitable offers that come your way today.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  You may find yourself being actively courted — receiving gifts and attention from admirers. Your relationship with children will be especially strong today, and pregnancy or childbirth are possible.<br>
+  Remember to maintain balance between career and family. Foster good relations with the women in your life, avoid conflicts with your mother or mother-in-law.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  While this is a day of potential new life and growth, be mindful of gynecological challenges such as fertility issues or miscarriages.<br>`,
+            
+            4: `<strong>Your Day Number is 4! </strong><br><br>
+
+  <strong>Today's Vibe ⤵️</strong><br>
+  The main advice for today: delegate your tasks, at least just for this day. Trust me, the people around you can manage perfectly well without your help. And the grocery shopping? Easy — just switch to delivery. <br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ If you’re working today, don’t overdo it beyond your usual schedule. Remember: you can’t finish all the work at once, and exhaustion really shows on your appearance.<br>
+  ✨ Avoid conflicts with men, especially if one of them is your boss. Be mindful of your emotions—if you feel overwhelmed, try some breathing exercises.<br><br>
+
+ <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;">
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Today, you’ll have many opportunities to earn money, but don’t rush to take on everything at once.<br>
+  Approach your work wisely — your projects and investments could finally bring the results you’ve been waiting for.<br>
+  This is also a good day to sign contracts, make deals, or buy and sell real estate.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Keep in mind that your family might need your help today and could try to pile extra work on you.<br>
+  Because of fatigue, you might come across as overly harsh or unfriendly to others.<br>
+  Conflicts or misunderstandings with your father may also arise, but remember to stay in control: don’t say anything you might regret later.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Chronic health issues might flare up today. Don’t overwork yourself, or your health may suffer.<br>
+  Remember, you’re not a robot — rest is essential. Avoid overworking, don’t take on others’ responsibilities, and delegate where possible. Pay attention to your health and don’t commit to tasks if you lack the energy.<br>`,
+            5: `<strong>Your Day Number is 5! </strong><br><br>
+
+  <strong>Today's Vibe ⤵️</strong><br>
+  It’s the perfect day to give your brain a little workout. So take it easy, grab that book you’ve been meaning to read, or dive into a crossword or a puzzle.<br>
+  And if you have a special someone — today’s also a fun day to be a little playful together .<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Connect with your father today — spend some quality time if possible. This can help dissolve past misunderstandings or resentments. His support will mean a lot to you, so try to honor his perspective and authority.<br>
+  ✨ Be open to others’ opinions, even if they differ from your own.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Today’s energy brings clarity and fairness — unresolved financial matters may be settled in your favor. Your hard work is likely to be acknowledged and appreciated.<br><br>
+  Set aside time to nourish your soul — it’ll give you the strength and inspiration to chase new goals.<br>
+  This is also a great day for networking, meeting new people, and expanding your circle. Just be careful not to come across as overly demanding with new connections.<br>
+  You might even come across a mentor or spiritual guide. And if someone invites you on a journey — absolutely say YES.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Nurture your connection with your father — let today be a bridge to better understanding. Avoid conflict with men in general — harmony is key.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Treat your body like the sacred temple it is. If you’ve been leaning on fast food lately, consider switching to cleaner, more nourishing meals.<br>
+  Also, set a daily routine and stick to it — it’ll help keep you grounded and energized 💫<br>`,
+
+            6: `<strong>Your Day Number is 6! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Take a good look at your image and style today. If something feels “off” or outdated — this is the perfect moment to refresh or upgrade it 🤍<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ This is not the day to pinch pennies. Spend your money on things that genuinely make you happy.<br>
+  ✨ Give special attention to your significant other (if you have one). Thoughtful gestures today can really deepen your connection.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  You might notice some tension around you — people could try to provoke you or stir up conflict. Do your best to stay calm and avoid getting pulled into any drama .<br>
+  If you’re working in a team, focus on bonding. A team-building activity or informal hangout can do wonders for unity and trust.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Be mindful of overly sweet talk from someone of the opposite sex — it may not be sincere and could lead to serious disappointment.<br>
+  Stay grounded and realistic. No one is perfect, and placing people on a pedestal only sets you up for disillusionment. Embrace your partner’s humanity — flaws and all.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Don’t overwork yourself — today, burnout can hit harder than usual. If you’re feeling unwell or drained, listen to your body and pause. Rest is not optional; it’s essential.<br>
+  And yes — temptations and distractions will be everywhere today. Don’t give in. They may look fun in the moment, but they won’t lead anywhere good.<br>.`,
+
+            7: `<strong>Your Day Number is 7!</strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  If you've been thinking about moving — today’s the day to start packing. And if you’re facing a decision, trust your intuition to guide you.<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Dive into spiritual practices — you’ll be amazed at how your life starts to shift.<br>
+  ✨ Don’t overstay at work; give yourself permission to rest.<br>
+  ✨ Physical activity is a big yes today — pick what feels right for you.<br>
+  ✨ Even a short trip out of town will do you a world of good.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Focus on the tasks that need to get done today. If something feels overwhelming, break it into smaller steps — you’ll see how much easier it becomes.<br>
+  If an exciting opportunity comes your way, say yes without overthinking — it will turn out to be the right choice.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  If you’re in a relationship and see a future with your partner — start thinking about how to deepen your connection.<br>
+  And if you’re single, don’t rush into dating just to fill the space. Trust that everything will unfold at the right time.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Start your morning with positive habits: a good book, a workout, a glass of warm lemon water — whatever recharges you.<br>
+  If you feel discomfort in your joints or neck, book a check-up right away. Don’t delay it — your body is asking for care.<br>`,
+
+            8: `<strong>Your Day Number is 8! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today, some old secrets might come to light. There’s also a heightened risk of deception — so stay alert and cautious.<br>
+  You might feel like others are being unfair to you, or you may be tempted to judge someone. Resist the urge. Remember, the Universe runs on balance — there’s no absolute good or bad.<br>
+  At work, you could receive a promotion or bonus. It’s also a great day to launch a business, open a bank account, or start a new job.<br>
+  If today involves legal matters — there’s a strong chance the outcome will be in your favor. And most importantly: karma is real. Do good, and it will come back to you.<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Plan your schedule for the upcoming week.<br>
+  ✨ Pay attention to your thoughts and intentions — consider the consequences of your actions.<br>
+  ✨ Be honest in all situations. Justice matters! Resist temptations and stay within legal and moral bounds.<br>
+  ✨ Take time to learn more about financial literacy. Don’t waste money — budget smartly for the month ahead.<br>
+  ✨ Try strategy board games that require long-term thinking.<br>
+  ✨ Don’t get involved in arguments unless absolutely necessary.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Today’s the day to step into your authority — don’t let others take advantage of your generosity.<br>
+  Use your power for good, not control. Live by the rules — and make sure you’re being honest with yourself and others.<br>
+  Consider signing up for a financial mindset course. It’s also a perfect day to legitimize or launch your business.<br>
+  ‼️ But be careful: don’t become a workaholic just for status or money. Remember — you can’t earn all the money in the world.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  If you’re in a relationship, now might be the time to make it official.<br>
+  Also, don’t skimp on your desires — you deserve to treat yourself.<br>
+  This is a moment of change. Value your time and your partner’s. Honesty, reliability, and openness are the foundation of a strong bond.<br>
+  If you’re single, it’s a powerful day for self-reflection and clarifying your relationship priorities.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Watch your emotions today. Don’t beat yourself up — let go of negative thoughts. They can impact your immune system or cause digestive issues.<br>
+  Also, limit screen time. Too much time on your phone or computer could strain your eyes.<br>`,
+
+            9: ` <strong>Your Day Number is 9! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today is a beautiful day to give back. Remember, charity isn't just about money — your words and support can make a big difference.<br>
+  Also, be mindful of overworking yourself. Rest is not a luxury today — it's a necessity 🤍<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Connect and communicate, even with strangers — it will be an enriching experience for you.<br>
+  ✨ Don’t be shy about accepting help from others — it's okay to receive.<br>
+  ✨ Limit your screen time — your mind needs quiet.<br>
+  ✨ If possible, visit your grandparents — they’ll love seeing you, and you’ll feel recharged.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  Avoid the trap of thinking you’re smarter than everyone else — that mindset can hold you back.<br>
+  Approach everything as a student of life. Stay open, humble, and eager to learn — that’s where real growth and prosperity lie.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  If you're in a relationship, your partner needs extra attention today. Show them you care by really listening — it will deepen your connection.<br>
+  If you're currently single, use this time to work on your own qualities — and watch how your confidence turns flaws into strengths.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Don’t brush off your health. If something feels off — book that appointment, don’t delay.<br>
+  The same goes for your children, if you have them — stay extra attentive to their well-being today.<br>`,
+
+            10: `<strong>Your Day Number is 10! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today, you might receive a sign from the Universe guiding you toward the right decision .<br>
+  You could also get a tempting offer — go ahead and say yes 🤍<br>
+  Oh, and it’s time to stop trying to control everything. Instead, allow yourself to simply enjoy each moment as it comes .<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Sometimes “done” is better than “perfect.” Just take the first step.<br>
+  ✨ Avoid suspicious deals — there’s a risk of being misled.<br>
+  ✨ Be open to new people and opportunities. Go out, attend events, and engage!<br>
+  ✨ Tune into what you're truly missing right now — then find a way to give that to yourself.<br>
+  ✨ Don’t be afraid to dream big. Write down even your wildest wishes!<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+ 
+  <strong>Financial Sphere:</strong><br>
+  Don't overload your schedule with tasks that don’t matter. Take a step back, reorganize, and cancel or postpone anything that isn’t urgent.<br>
+  If you can — consider taking a short break or mini-vacation.<br>
+  If you're employed, today’s the right time to speak with your boss about a promotion or a salary raise.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  You’ll likely feel light and joyful today — enjoy that energy!<br>
+  You may meet someone new and special — a serious relationship could blossom.<br>
+  And if you already have a partner, plan a sweet surprise — it will strengthen your bond.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Dress for the weather — don’t risk getting sick. Avoid too many different drinks or sugary beverages, as your digestion might be sensitive today.<br>
+  Get outside and move around. Avoid being sedentary — it's key to keeping your circulation healthy.<br>`,
+
+            11: `<strong>Your Day Number is 11! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Start today with some physical exercise 🏃, it will put you in the right mindset and help stabilize your emotional state.<br>
+  If you feel a dip in energy, take a closer look at where your energy is going. You need to learn how to rest and recharge.<br>
+  Activities like fitness, massage, yoga, or any body-centered relaxation practice will be perfect.<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Stay in control of your emotions — don’t lash out. Learn to own your mistakes.<br>
+  ✨ Practice mindfulness and spiritual rituals: meditation, breathwork, chanting, or even ice baths and grounding exercises.<br>
+  ✨ Let go of anxious thoughts — they only drain your energy.<br>
+  ✨ Avoid conflict — choose peace and presence over reaction.<br>
+  ✨ Channel your energy into helping others: offer support, volunteer, join a cause, or simply be there for someone in need.<br>
+  ✨ Finally complete something you’ve been putting off.<br>
+  ✨ Create a work schedule for the month ahead.<br>
+  ✨ Process any suppressed emotions. Use movement — dance, scream into a pillow (or the forest), clean, declutter, tear paper — anything that brings emotional release.<br>
+  ✨ Don’t force yourself to do things you dread. Instead, find a reward that motivates you, or break the task into smaller steps.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  
+  <strong>Financial Sphere:</strong><br>
+  You’ll likely have a surge of energy today — use it wisely.<br>
+  Great results await you in your career or business. Keep working toward your goals, but don’t forget to rest along the way.<br>
+  This is also a powerful day for giving — the more you share, the more you receive.<br>
+  Beware of ego flaring up. Let go of pride and impatience. Instead, focus on compassion, humility, and constructive action.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationships Sphere </strong><br>
+  You have the potential to be a powerful force for good today. Channel that into meaningful action.<br>
+  Avoid becoming overly aggressive. There’s potential for conflict or even physical altercations if you don’t keep your emotions in check.<br>
+  Use your energy for movement and mindfulness — walk, exercise, meditate, and care for your emotional and physical well-being.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere ⚠️</strong><br>
+  If you ignore the signs today, you risk injury — bruises, sprains, or worse.<br>
+  You may also encounter frustrating or toxic individuals trying to push your buttons. Don’t engage.<br>
+  ⚠️ Avoid scheduling surgeries or medical procedures today — it’s not the ideal time .<br>`,
+
+           12: `<strong>Your Day Number is 12! Read Your Forecast ✨</strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today you must definitely treat yourself. Do something you’ve been wanting to do for a long time but kept postponing.<br>
+  To keep your mood uplifted throughout the day, repeat affirmations.<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Have a heartfelt talk with your mom — it will bring you closer.<br>
+  ✨ Spend the evening watching an inspiring movie about people who achieved great success. It will energize you.<br>
+  ✨ Remember, you are the most important person in your life.<br>
+  ✨ Try to be understanding of whatever happens today.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial  Sphere:</strong><br>
+  Everything new you do today will be successful, as long as it brings good to the world. <br>
+  Everything is in your hands — take action.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Don’t refuse to help others, but don’t forget about yourself either.<br>
+  It’s very important to learn to love yourself and give to yourself first, then to others.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Your health may feel a bit off today, but meditation and spiritual practices will help improve your wellbeing.<br>
+  If you feel like it, go for a massage or yoga — you’ll feel the positive effects right away.<br>`,
+
+            13: `<strong>Your Day Number is 13! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today you may receive new offers that will bring changes to your life. This day is favorable for cleansing and transforming both inside and out.<br>
+  Try to take everything lightly and face your fears — that’s where your growth happens. <br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Make a plan that will help you change your life for the better.<br>
+  ✨ Clean up your notebook, photo and video albums.<br>
+  ✨ Do some exercise.<br>
+  ✨ Avoid indecision and irresponsibility.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Today is a perfect day to start a new project. It’s time to leave the old behind and allow even the wildest ideas to come true.<br>
+  Also, it’s favorable to sign new deals or terminate old ones.<br>
+  And it’s definitely time to quit a job you don’t love.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Challenges may arise today, but your task is not to fall into provocations and avoid conflicts.<br>
+  If you’re single, there’s a chance to meet someone destined for you, your other half.<br>
+  If you’re in a relationship, it may reach a new level of closeness.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  It’s important to balance work and rest today, don’t overwork yourself.<br>
+  Also avoid heavy physical loads or lifting weights to prevent injury or back problems.<br>`,
+
+            14: `<strong>Your Day Number is 14!</strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Today is a great day to bring your inner state to stability and harmony.<br>
+  Focus on activities that bring you peace and fill you with positive emotions. Spend more time near water.<br>
+  Also, practice moderation and patience, don’t spread yourself too thin, and avoid rushing through the day.<br>
+  And importantly — don’t show aggression or greed, avoid conflicts — they won’t lead to anything good ❌<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Take time for yourself and do what brings you inner harmony.<br>
+  ✨ Stay calm, avoid negative emotions like sharpness and irritability.<br>
+  ✨ Don’t argue; be tolerant.<br>
+  ✨ Take a bath with sea salt or visit a spa — it will recharge your energy.<br>
+  ✨ Make sure to spend time and attention on your father.<br>
+  ✨ Avoid bad habits and overeating.<br>
+  ✨ Focus on one main task instead of juggling many.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Expect stability in work matters today. Make deals and agreements — everything will go smoothly and be beneficial for you.<br>
+  Show diplomacy when solving different issues.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  This is a day for soulful closeness with your loved one and family.<br>
+  New acquaintances today may develop into long-term relationships.<br>
+  Open yourself to others and accept them openly.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  It’s very important to maintain emotional stability today, so keep your emotions under control.<br>
+  It’s also good to give up bad habits and avoid overeating.<br>`,
+
+            15: `<strong>Your Day Number is 15! </strong><br><br>
+
+<strong>Today’s Vibe ⤵️</strong><br>
+Today can be bright and memorable. People will listen to you especially well, so you can achieve a lot! You may be offered something desirable, profitable, or very tempting. But don’t rush — analyze carefully whether the offer undermines anyone’s honor or dignity.<br><br>
+
+<strong>Recommendations</strong><br>
+✨ Don’t manipulate others, avoid aggression and negativity.<br>
+✨ Resist temptations, stay clear of love triangles and addictions. Today is a perfect day to break free from these.<br>
+✨ Practice embracing and accepting your sexuality and shadow sides.<br><br>
+
+<img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+<strong>Financial Sphere:</strong><br>
+Money may come today from unexpected sources or your surroundings. But stay alert to avoid getting involved in scams.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Relationship Sphere:</strong><br>
+Passion may ignite in your relationships today! Focus on your partner and try something new, unusual, and exciting to spark the flame.<br>
+If you are single, something tempting might cross your path.<br><br>
+
+<div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+<strong>Health Sphere:</strong><br>
+You might feel very tired today. This is a sign that it’s time to give up bad habits to gain a powerful boost of energy.<br>`,
+
+            16: `<strong>Your Day Number is 16! </strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  Most likely, today you’ll feel inspired to create something new!<br>
+  You’ll also get some great ideas on how to improve your business or relationships.<br>
+  The key is — don’t stop, bring your ideas to life.<br>
+  And very importantly — believe in yourself, keep track of your emotions, and avoid negativity (otherwise there’s a risk of slipping into aggression and destroying everything around you).<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Do some sports, fitness, or yoga.<br>
+  ✨ Cut out sweets today.<br>
+  ✨ Write down your goals and plans for the next few months.<br>
+  ✨ Work through any resentments: write a gratitude letter, ask for forgiveness, or read K. Tipping’s book Radical Forgiveness.<br>
+  ✨ Make a list of unfinished tasks that drain your energy — either complete them or let them go if they’re no longer relevant.<br>
+  ✨ Don’t cling to material things; get involved in charity.<br>
+  ✨ Attend a spiritual event — gong meditation, women’s circle, or similar.<br>
+  ✨ If you feel negativity creeping in — spend some time alone, meditate, take a walk, rest.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Show creativity and innovation at work.<br>
+  Implement your brilliant ideas.<br>
+  Also, create something tangible, fix or upgrade something, give an old object a second life — this will bring you success.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  If you’re in a relationship, conflicts might arise: learn to maintain your bond, not break it.<br>
+  Make plans together for the next 3–5 years.<br>
+  To keep emotions in check, come up with a stop-word together.<br>
+  And definitely do something that unites you both: for example, visit a pottery workshop or have a photo shoot.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Exercise regularly and meditate more often.<br>
+  If you haven’t had a check-up in a while, it’s a good day to get one.<br>
+  Also, be extra careful on the road — accidents are possible.<br>`,
+
+            17: `<strong>Your Day Number is 17!</strong><br><br>
+
+  <strong>Today’s Vibe ⤵️</strong><br>
+  This day is perfect for creative and vibrant personalities.<br>
+  Don’t be afraid to show yourself today — share your talents and uniqueness with the world.<br>
+  If you’re not used to being in the spotlight, this is a great chance to finally shine, get attention, and receive recognition from others. Go for it!<br><br>
+
+  <strong>Recommendations</strong><br>
+  ✨ Go live on social media today and talk about any topic you like.<br>
+  ✨ Attend a creative workshop.<br>
+  ✨ Book a professional photoshoot.<br>
+  ✨ Watch an inspiring movie.<br>
+  ✨ Try to keep your pride in check.<br>
+  ✨ Live the day with an open heart.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Today you can count on support and help in many forms — money, gifts, or career advancement.<br>
+  Your efforts will bring profit and open new doors.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Spend quality time with your partner.<br>
+  Invite them on a beautiful date and be sure to get creative and come up with something special.<br>
+  If you’re single, going to events and meeting friends will be very beneficial today.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Your health is on the rise today; you’ll feel a surge of energy and vitality.<br>
+  But if you have allergies or food intolerances, be extra careful.<br>`,
+
+            18: `<strong>Your Day Number is 18! </strong><br><br>
+
+  Today you’ll feel like retreating and creating a cozy, comfortable atmosphere at home.<br>
+  Go ahead and enjoy it, but don’t disappear from social life for too long.<br>
+  Also, you might get invited on a date — definitely say yes!<br><br>
+
+  <strong>Recommendations:</strong><br>
+  ✨ Work on yourself today: let go of grudges and don’t be afraid to open your heart to someone.<br>
+  ✨ Practice spiritual exercises.<br>
+  ✨ Spend time in nature, go for a walk, recharge by the water.<br>
+  ✨ Call your parents.<br>
+  ✨ Help others — get involved in charity and good deeds.<br>
+  ✨ Be honest in everything and avoid deception.<br>
+  ✨ Develop your intuition.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Be cautious — there might be some intrigue at work.<br>
+  Work with pleasure, don’t betray your desires, and don’t avoid new opportunities and meetings.<br>
+  Also, don’t give unsolicited advice. Be wiser and more patient.<br>
+  See life as a chance, not a limitation.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Today you need to especially trust your partner.<br>
+  Learn to understand each other and build harmony.<br>
+  If you’re single, go on a date and make new acquaintances.<br>
+  There’s a chance you might meet your love.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  This is the perfect day to focus on your health!<br>
+  Get a check-up and don’t avoid treatment if something bothers you.<br>
+  Try to relax, listen to meditation, and pay special attention to your children’s health.<br>`,
+
+            19: `<strong>Your Day Number is 19!</strong><br><br>
+
+  Today is a wonderful day to start new projects.<br>
+  Trust your inner intuition, and the results won’t keep you waiting.<br>
+  Try to avoid aggression and pressure on others — don’t “burn” yourself or those around you.<br><br>
+
+  <strong>Recommendations:</strong><br>
+  ✨ Spend time with like-minded people.<br>
+  ✨ It’s a great day for business trips and public speaking — don’t be afraid to show yourself.<br>
+  ✨ Inspire those around you and your colleagues with your ideas, support them.<br>
+  ✨ Don’t be afraid to step into the new.<br>
+  ✨ If you have doubts about your success, work on your self-esteem and belief in yourself.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Throughout the day, you may receive great offers — don’t miss them, this is exactly what you need now!<br>
+  If you work for someone else, a promotion might be coming your way.<br>
+  And if you own a business, today is excellent for closing profitable deals.<br>
+  But if you’re aggressive or selfish, you might spoil everything yourself.<br>
+  Watch out for “setups” by colleagues or even damage to your reputation.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationships:</strong><br>
+  If you’re single, there’s a good chance you’ll meet someone new today.<br>
+  If you have a loved one, the day will be filled with bright emotions.<br>
+  It’s also a great day to make peace with siblings, if you have any.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health:</strong><br>
+  Be careful today — health issues might arise!<br>
+  If it’s summer or you’re in hot climates, beware of sunburn or heatstroke; take care in the sun.<br>
+  Back problems might also remind you to take care of yourself.<br>`,
+
+            20: `<strong>Your Day Number is 20! </strong><br><br>
+
+  Today, your relatives or parents might reach out or remind you of something.<br>
+  Your intuition is especially sharp now — trust it.<br>
+  You might have a prophetic dream, especially about your family — it’s a hint to help you understand what steps to take.<br><br>
+
+  <strong>Recommendations:</strong><br>
+  ✨ It would be wonderful if you can visit your loved ones, spend some quality time together.<br>
+  ✨ Write words of gratitude to your ancestors.<br>
+  ✨ Practice paying respects to your parents — this will fill you with powerful energy.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  Events at work today can help bring your team closer together.<br>
+  Your boss might hear you out — try sharing your idea or proposal, there’s a good chance to reach an agreement.<br>
+  If you run a family business with your spouse, be cautious.<br>
+  Misunderstandings could lead to losses.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Spend time with your family: go for a walk in the park, watch a movie, just be close to each other.<br>
+  If there are any “sharp” issues between you, try to resolve them.<br>
+  Ask yourself often: “Do I want to be happy or to be right?” — this question will put many things in perspective.<br>
+  Today is also an ideal day for a wedding or a spiritual union.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Remember that many illnesses stem from lingering resentments, so it’s important to let them go.<br>
+  Chronic fatigue, genetic conditions, and inherited family illnesses may make themselves felt today.<br>`,
+
+            21: `<strong>Your Day Number is 21! </strong><br><br>
+
+  <strong>Today’s Vibe:</strong><br>
+  This is a perfect day to spend quality time with family.<br>
+  Plan a little getaway together and go explore this beautiful world 🤍<br><br>
+
+  <strong>Recommendations:</strong><br>
+  ✨ Challenge yourself — do something you’ve been dreaming of for a while.<br>
+  Feel that you’re truly allowed to have anything you desire.<br>
+  ✨ It’s especially important to manage your emotions today and avoid conflicts — particularly with women.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  An ideal day to launch a major new project, work with international partners, take business trips, or handle overseas tasks.<br>
+  It’s also favorable for collaborating with women.<br>
+  You might receive a lucrative offer that leads to successful cooperation — don’t miss out!<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  You’ll likely receive extra attention from the opposite sex.<br>
+  New connections with foreigners are possible, and you might even receive meaningful gifts.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  There’s a high chance of conceiving or giving birth today.<br>
+  Women should pay close attention to their reproductive health, as there may be challenges with conception or pregnancy.<br>
+  Also, watch your diet — allergic reactions could be more likely today.<br>`,
+
+            22: `<strong>Your Day Number is 22! </strong><br><br>
+
+  <strong>Today’s Vibe:</strong><br>
+  This is a wonderful day to express your creative and spiritual potential.<br>
+  Step into the spotlight and let yourself be seen.<br>
+  Bring lightness to everything you do — in relationships and in work.<br>
+  If possible, take a break from your regular schedule and go with the flow.<br>
+  In the evening, meet up with friends or plan a romantic night under the stars by the fire .<br>
+  It’s also a great time to spend with children or young people — their free spirit and energy will inspire you.<br><br>
+
+  <strong>Recommendations:</strong><br>
+  ✨ Be light, positive, and optimistic.<br>
+  ✨ Go out and enjoy an event — but stay clear of any unhealthy habits or addictions.<br>
+  ✨ Say “yes” to spontaneous plans.<br>
+  ✨ Share your talents creatively — perform, speak, or show your art.<br>
+  ✨ Don’t cling to material things.<br>
+  ✨ Let your loved ones breathe — avoid controlling or suppressing their desires.<br><br>
+
+  <img src="https://images.unsplash.com/photo-1506905925346-21bda4d32df4?ixlib=rb-4.0.3&auto=format&fit=crop&w=400&h=80" style="width:100%; height:60px; object-fit:cover; margin:15px 0; border-radius:8px;"><br>
+
+  <strong>Financial Sphere:</strong><br>
+  The simpler your relationship with money, the better.<br>
+  But don’t go overboard — balance is key.<br>
+  Be especially cautious of scams or manipulative people today.<br>
+  There’s a higher risk of unpleasant financial situations.<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Relationship Sphere:</strong><br>
+  Perfect day for bonding with family, children, and deepening your emotional connection with a partner.<br>
+  If you’re single, you might meet someone meaningful today.<br>
+  Trying for a baby? A pleasant surprise could be on the way 🤍<br><br>
+
+  <div style="width:100%; height:3px; background:linear-gradient(90deg, transparent, #5f2797, transparent); margin:20px 0;"></div>
+
+  <strong>Health Sphere:</strong><br>
+  Pay close attention to your overall well-being — both emotional and mental.<br>
+  Stay optimistic and gentle with yourself.<br>`,
+
+        };
+
+        document.getElementById('overallToneResult').innerHTML = dailyForecasts[arcanaNumber] || "A unique daily energy that requires deeper interpretation.";
+    
+    } else {
+        // Keep existing yearly logic unchanged
+        const descriptions = {
+            1: "New beginnings, leadership, independence, pioneering spirit",
+            2: "Cooperation, balance, partnerships, diplomacy",
+            3: "Creativity, communication, artistic expression, joy",
+            4: "Stability, hard work, organization, building foundations",
+            5: "Freedom, adventure, change, versatility",
+            6: "Love, family, responsibility, nurturing, healing",
+            7: "Spirituality, introspection, analysis, wisdom",
+            8: "Material success, ambition, business acumen, power",
+            9: "Completion, humanitarian service, universal love",
+            10: "Cycles, karma, destiny, major life changes",
+            11: "Intuition, inspiration, enlightenment, spiritual insight",
+            12: "Sacrifice, surrender, new perspective, spiritual growth",
+            13: "Transformation, endings and beginnings, rebirth",
+            14: "Balance, moderation, patience, healing",
+            15: "Temptation, materialism, breaking free from bondage",
+            16: "Sudden change, revelation, breaking down old structures",
+            17: "Hope, inspiration, spiritual guidance, renewal",
+            18: "Illusion, intuition, subconscious, hidden truths",
+            19: "Success, vitality, achievement, positive energy",
+            20: "Judgment, rebirth, inner calling, spiritual awakening",
+            21: "Completion, fulfillment, achievement, cosmic consciousness",
+            22: "Unlimited potential, spiritual mastery, the fool's journey complete"
+        };
+
+        const baseDescription = descriptions[arcanaNumber] || "A unique energy pattern that requires deeper interpretation.";
+        let overallToneText = `Arcana ${arcanaNumber} brings the energy of ${baseDescription}. This ${type.toLowerCase()} period will be influenced by these powerful vibrations, shaping your overall experience and opportunities.`;
+        if (yearDescription && type === 'Yearly') {
+            overallToneText += `\n\n🌟 Year Overview: ${yearDescription}`;
+        }
+        document.getElementById('overallToneResult').textContent = overallToneText;
+            }
+
+    document.getElementById('section3').classList.remove('hidden');
+    document.getElementById('section3').scrollIntoView({ behavior: 'smooth' });
+}
+
+
+function displayYearlyResults(year, arcanaNumber) {
+    document.getElementById('yearlyPrognosisDate').textContent = `Yearly Prognosis for ${year} | Personal Year ${arcanaNumber}`;
+    
+   const yearlyDescriptions = {
+    1: "<strong>Your Personal Year Number is 1</strong><br><br>Your main lesson this year is to plant seeds in all areas of life—without ignoring any—and to start something new. This is a foundational year, where what you begin now will shape your future.<br><br>If you're in a strong relationship, it should evolve to a new level. The same applies to your business—if it's already thriving, now is the time to elevate it further. Do not remain stagnant.<br><br><strong>Key Actions:</strong> Write down your goals and make plans for every area of life. Avoid focusing solely on one thing (like finances), or it may create consequences that echo through the next 8 years.<br><br><strong>Important:</strong> Strive for balance between effort and rest, between work and personal life. Without this balance, long-term success may be difficult to achieve.",
+
+    2: "<strong>Your Personal Year Number is 2</strong> ✨<br><br>This year is all about connection. It's a time to build meaningful partnerships—with people who truly understand and support you, whether in love, friendship, or work.<br><br>It's also a year strongly linked to <strong>children, marriage, and deepening emotional relationships</strong>.<br><br>If you're already in a relationship, this is your chance to take it to a new level of emotional closeness and mutual support. If you're single, a meaningful romantic connection may come into your life.<br><br><strong>Key to Success:</strong> Choose your energy and emotional state every day. The number 2 is deeply connected to your soul and emotional awareness, so staying grounded in your own inner peace is essential.<br><br><strong>Important:</strong> This is not a year to isolate, suppress your feelings, or act out in anger. Focus on forgiveness, protect your mental and emotional health, and allow yourself space to grow emotionally.",
+
+    3: "<strong>Your Personal Year Number is 3</strong> ✨<br><br>This is a year of creativity and self-expression. The key lesson is expansion and visibility. So go ahead—take action and let the world see you! Trust that it will pay off.<br><br>This is also a powerful time for creative projects and even the possibility of starting or growing your family.<br><br><strong>➕ If you're living in alignment:</strong> Expect growth, recognition, financial improvement, new friendships, travel, and expanded projects that began in previous cycles.<br><br><strong>➖ If you're out of alignment:</strong> Be prepared for emotional outbursts, nervous breakdowns, strained relationships with your mother, and challenges involving children.<br><br><strong>Important:</strong> Protect your energy and expand your areas of focus.",
+
+    4: "<strong>Your Personal Year Number is 4</strong> 🔧<br><br>This is a year about health, structure, and physical well-being. The main lesson: <strong>take care of your body</strong>.<br><br><strong>➖ If you're not aligned:</strong> You may face chronic health flare-ups, physical exhaustion, overwork, or loss of stability—like housing or finances.<br><br><strong>➕ In a positive flow:</strong> You'll enjoy strength, vitality, significant income, a potential new home, or success in real estate deals.<br><br>This year tests your loyalty in friendships—navigate these tests with integrity. For men, it can bring fatherhood and added responsibility.<br><br><strong>Important:</strong> Don't rush. Hold off on launching new businesses or pushing forward too fast. Focus on family and prepare for new beginnings.",
+
+    5: "<strong>Your Personal Year Number is 5</strong> 🌍<br><br>This is a year of rapid change—travel, movement, and major life shifts. Your biggest lesson is to say 'Yes' to life. Welcome the opportunities the Universe sends your way.<br><br>Be a trailblazer. Stay open, curious, and ready for adventure. Embrace life with lightness and playfulness.<br><br><strong>➕ If aligned:</strong> Expect exciting education, mentorships, new friendships, networking, workshops, and inspiring experiences.<br><br><strong>➖ If misaligned:</strong> You may face stagnation and painful transitions.<br><br><strong>Important:</strong> Protect your nervous system. Keep moving forward proactively to avoid getting caught in negative patterns.",
+
+    6: "<strong>Your Personal Year Number is 6</strong> 💖<br><br>This is a year focused on love, family, and emotional connection.<br><br><strong>➕ If you live it well:</strong> You'll experience deep love, marriage, pregnancy, the birth of a child, and heart-centered partnerships. Even a business based on love—like a family venture—can thrive.<br><br><strong>➖ If you're out of alignment:</strong> You may confront your lack of self-love. Relationships can fall apart, and social bonds may weaken.<br><br>All of this points to one thing—it's time to truly love yourself.<br><br><strong>Important:</strong> Learn to love, accept, and prioritize yourself—not just others.",
+
+    7: "<strong>Your Personal Year Number is 7</strong> 🧘‍♀️<br><br>This is a year of profound transformation. It's time to look inward—focus on self-discovery, solitude, and spiritual growth.<br><br><strong>➕ In the positive:</strong> You may experience a quantum leap: rapid personal growth, spiritual awakening, travel, or even relocating to a new city or country.<br><br><strong>➖ In the negative:</strong> There may be painful separations, loneliness, and breakdowns.<br><br>To avoid this, shift your focus toward purposeful work—not just money. True abundance comes from alignment.<br><br><strong>Important:</strong> Monitor all areas of life carefully. Note: This is not a year for getting married.",
+
+    8: "<strong>Your Personal Year Number is 8</strong> 💼<br><br>This year is about building on past seeds and expanding your achievements. Honesty is the key theme—be true in your work and relationships. Take off the masks and be authentic.<br><br>Avoid judgment and respect boundaries. Don't take what's not yours. Instead, invest in yourself and others generously.<br><br>You may start a new project this year, but keep it small and time-bound so it can succeed within the year.<br><br><strong>DON'T:</strong> Take or give out loans—this year may bring multiple integrity tests.<br><br><strong>Important:</strong> Keep your promises. Share what you have. Stay accountable.",
+
+    9: "<strong>Your Personal Year Number is 9</strong> 🔚<br><br>This is a year of closure—completing cycles in relationships, work, and personal growth. Your core lesson is to let go of what no longer serves you.<br><br>Don't try to bring the past back or cling to what's fading. Stop trying to control everything. If you don't release things willingly, life will take them from you.<br><br>Clean out your home, remove toxic people, leave unfulfilling jobs. Trust that the Universe is making space for what's next.<br><br><strong>Important:</strong> Do not start major new projects this year. Instead, focus on wrapping things up and investing your energy wisely.",
+
+    10: "<strong>Your Personal Year Number is 10</strong> 🍀<br><br>This is a year of luck, destiny, and transformation. Your greatest lesson is to trust yourself and the higher forces guiding you. Accept all that comes with gratitude.<br><br><strong>➕ If you follow this path:</strong> You'll enjoy financial success—lucky breaks, profitable deals, fulfilled dreams, success in business or trade, and favorable purchases. Everything will align beautifully.<br><br><strong>➖ If you resist the lesson:</strong> You may face losses, theft, confusion, and a feeling of life being 'stuck.'<br><br><strong>Important:</strong> Take advantage of the opportunities life brings. Let go of the past and trust the changes ahead.",
+
+    11: "<strong>Your Personal Year Number is 11</strong><br><br>This is a year of important decisions, courage, and inspiration. The key lesson is setting clear goals, taking action, and achieving results.<br><br><strong>➕ If you follow your lessons:</strong> Expect success in business and career, profits, winning disputes, confidence, and good health.<br><br><strong>➖ If you fall out of alignment:</strong> You may feel drained, face losses, inner depression, weakness, hidden enemies or competitors, and possibly health issues or medical errors.<br><br><strong>Important:</strong> Focus your energy on what truly matters. Also, keep active—exercise, meditate, and contribute to making the world better.",
+
+    12: "<strong>Your Personal Year Number is 12</strong><br><br>This year is about creativity, humility, and shifting your perspective. The main lesson is to value yourself and your work, engage in creative pursuits, and start seeing familiar things in new ways.<br><br><strong>➕ If aligned:</strong> You will experience a creative breakthrough, self-discovery, spiritual growth, healing after illness, reassessing values, letting go of the old, and reaching a new level.<br><br><strong>➖ If misaligned:</strong> You might face uncertainty, fears, victimization, financial losses, breakups, and emptiness.<br><br><strong>Important:</strong> Don't let negative emotions or fears break you or turn you into a victim. Remember every problem has a solution, and learn to say 'no' to what doesn't serve you.",
+
+    13: "<strong>Your Personal Year Number is 13</strong><br><br>This number represents transformation and change. The key lesson is to release the past and not hold on to what's no longer needed. Remember: to rise higher, you must shed unnecessary baggage.<br><br><strong>➕ If you live it well:</strong> Expect transformations, career advancement, sudden positive life changes, and new people entering your life.<br><br><strong>➖ If not:</strong> You could face crises at work, in relationships, health issues, sharp negative changes, or addictions.<br><br><strong>Important:</strong> Let go of the old, practice gratitude in every situation, and maintain a healthy balance between work and rest. Avoid overworking.",
+
+    14: "<strong>Your Personal Year Number is 14</strong><br><br>This is a year for reviewing and reflecting on what remains from the past year. Don't rush—take your time to think, weigh your options, and be patient. The decisions you make this year will have a lasting impact.<br><br>It's crucial to distinguish between your true desires and less important wishes. You'll need to maintain calm outwardly and peace inwardly like never before.<br><br><strong>Important:</strong> Be aware that some processes may take longer than expected. Avoid spreading yourself too thin across many projects. Seek harmony, patience, and stability.",
+
+    15: "<strong>Your Personal Year Number is 15</strong><br><br>This year brings material changes! You may achieve success, career growth, and good profits—financial support could come from someone in your circle.<br><br>Your outlook on life is likely to shift, and fears may fade. It's important not to become attached to possessions or people to avoid becoming their slave. Practice tolerance toward others' weaknesses.<br><br>This is also a time of major changes and unexpected surprises. Every event will have a hidden meaning—both a reward and a test of your honesty, sincerity, and true intentions.<br><br>Relationships may face temptations, jealousy, and tests of loyalty. But you could also find a deep love—someone who becomes truly important.<br><br><strong>Important:</strong> Avoid love triangles, cheating, and betrayal.",
+
+    16: "<strong>Your Personal Year Number is 16</strong> ✨<br><br>This number symbolizes favorable outcomes in business, success in any field, and advancement in your career. It also indicates potential improvements in your existing business or the creation of a new one, buying real estate, building a home, renovating, or relocating. Everything is likely to unfold in your favor 🙌🏻<br><br><strong>Your key lesson:</strong> Build—not destroy. If you feel the urge to break something off (whether it's a relationship, partnership, or work connection), resist it. Doing so could lead to collapse in all areas of life ❌<br><br><strong>➕ If you embrace your lessons:</strong> Expect significant growth in your career, fresh beginnings, and personal life. Reconciliation and renewal of a past relationship are also possible.<br><br><strong>➖ If you go through the year from negativity:</strong> You may face the breakdown of a business, career stagnation, loss of status, relationship issues, even divorce, and financial losses.<br><br><strong>Important:</strong> Channel your energy into creating something new or expanding what you've already built. Immerse yourself in spiritual growth, and don't fixate on money—true financial abundance will come through deeper spiritual awareness 💰",
+
+    17: "<strong>Your Personal Year Number is 17</strong> ✨<br><br>This is a highly creative number—symbolizing growth, success in your endeavors, artistic expression, and the opening of new opportunities. It also brings signs of destiny, the fulfillment of wishes, and unexpected but meaningful help from outside sources. In your personal life, this number points to new relationships and romance 💞<br><br><strong>➕ If you embrace your lessons:</strong> It can bring you luck, recognition, and success.<br><br><strong>➖ If you live through the year negatively:</strong> You may experience creative blockages, disappointment, deception, theft, or unrequited love.<br><br><strong>Important:</strong> Develop self-confidence and allow others to see your inner world. Be honest with yourself and those around you. Trust the Universe, step onto your destined path, and begin to shine in the public eye 🤍",
+
+    18: "<strong>Your Personal Year Number is 18</strong> ✨<br><br>This year is about meaningful connections, starting a family, and the birth of children 👨‍👩‍👧‍👦<br><br>Your main lesson for the year is to release all fears and phobias and to stop deceiving yourself 🙌🏻<br><br><strong>Key principle:</strong> Do not cling to the past or try to reclaim what's already gone. Always maintain a positive mindset—your thoughts are powerful and shape your reality.<br><br>If you don't let go of fear and continue replaying negative experiences, it may lead to health issues, psychological distress, or chest-related pain 🙏🏻<br><br>Nurture strong relationships with your parents, colleagues, and friends. If you haven't started a family yet, this is a great time to consider it—or think about having a child 🤍<br><br><strong>Important:</strong> Stay within the law, run your business legally, and avoid deception. Let go of fear, and don't isolate yourself—stay open to communication with others 🙏🏻",
+
+    19: "<strong>Your Personal Year Number is 19</strong> ✨<br><br>This number marks a favorable time for new beginnings. You may experience emotional uplift, find joy in life's simple pleasures, reconnect with your inner child, or fulfill unmet needs from childhood 🙌🏻<br><br>Communication with children—both personally and professionally—will flow easily. It's also a great time to strengthen your bond with siblings, especially if you've been distant for a while.<br><br>Allow yourself to relax and go with the flow of life—everything will start falling into place naturally across all areas. However, this only works if you're not overly fixated on a specific outcome 🙏🏻<br><br>Marriages formed during this time are likely to be truly successful. Socializing with friends and spending quality time with family will bring you many benefits ✨<br><br><strong>Important:</strong> Let go of obsessive thoughts. Don't push too hard for a relationship or material success, as this can actually block your progress ❌ Practice gratitude for what life gives you. Balance your energy across all areas of life. Forgive yourself, release guilt, and don't judge your past decisions 🙏🏻",
+
+    
+      20: "<strong>Your Personal Year Number is 20</strong><br><br>This year brings joy and release from past burdens. You're likely to gain something truly valuable and meaningful. It's also an ideal time to heal and strengthen family bonds.<br><br><strong>+ If you're aligned:</strong> You may receive public recognition and professional success. This opens doors to exciting opportunities for growth. You could also start a family, have a child, or build deeper connections with relatives.<br><br><strong>– If you go through the year out of alignment:</strong> It may feel like you're stuck, constantly facing obstacles and missing out on opportunities. You may fall into overworking, which won't bring results and could create tension at home. Childhood wounds and unresolved family issues may resurface.<br><br><strong>Important:</strong> Heal old wounds, especially those connected to your family. Rebuild a healthy relationship with your parents, and accept them as they are. Take time to learn about your family history and talk more with the older generation.",
+
+    21: "<strong>Your Personal Year Number is 21</strong><br><br>This is a year of expansion and stepping into something bigger. Your biggest lesson? To show up fully and stop playing small. Take bold action — the rewards will come. It's a powerful time for launching large-scale projects or starting a family.<br><br><strong>+ If you embrace this energy:</strong> Expect massive growth, higher visibility, success abroad or even relocation. Surprises, new adventures, powerful connections, and dream projects are all possible.<br><br><strong>– If you resist this energy:</strong> You might face emotional ups and downs, strained relationships with your mother or children, or limiting circumstances caused by fear, others' influence, or external restrictions. There may be failures abroad or stagnation in your goals.<br><br><strong>Important:</strong> Expand your mindset, raise your energy, and remove limitations. Don't shrink back — this is your year to shine and grow. Claim your space.",
+
+    22: "<strong>Your Personal Year Number is 22</strong><br><br>A year of major decisions, life changes, and the potential for dreams to come true. The key lesson? Take full responsibility for your life while keeping things light and joyful. Learn to break free from limiting beliefs and old rules that no longer serve you.<br><br><strong>+ If you live this year in alignment:</strong> Expect positive encounters, a sense of freedom, travel, falling in love, fresh starts, major shifts, moving to a new place, and deep support from those around you. You might even welcome a new pet into your home.<br><br><strong>– If you're off balance:</strong> The year may bring a sense of restriction, impulsive actions, betrayal by friends, potential accidents, health issues, financial losses, or tension with children.<br><br><strong>Important:</strong> Trust your intuition and don't be afraid to start over. Say yes to new beginnings — especially where you still feel trapped. Liberation starts with one brave step."
+};
+
+document.getElementById('yearlyDescriptionResult').innerHTML = yearlyDescriptions[arcanaNumber] || "A unique yearly energy that requires deeper interpretation.";
+
+    
+    document.getElementById('section4').classList.remove('hidden');
+    document.getElementById('section4').scrollIntoView({ behavior: 'smooth' });
+}
+
+function saveResults() {
+    const prognosisDate = document.getElementById('prognosisDate').textContent;
+    const overallTone = document.getElementById('overallToneResult').textContent;
+    const money = document.getElementById('moneyResult').textContent;
+    const relationship = document.getElementById('relationshipResult').textContent;
+    const health = document.getElementById('healthResult').textContent;
+    
+    const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+    
+    const content = `KARMA DECODED - PERSONAL PROGNOSIS
+
+Generated on: ${new Date().toLocaleDateString()}
+Birth Date: ${savedDate}
+
+${prognosisDate}
+
+🌟 OVERALL TONE:
+${overallTone}
+
+💰 MONEY SPHERE:
+${money}
+
+💕 RELATIONSHIP SPHERE:
+${relationship}
+
+🌿 HEALTH SPHERE:
+${health}
+
+---
+© 2025 Karma_Decoded | Maria Fistican
+    `;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Prognosis_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    alert('Your prognosis has been saved! 💫');
+}
+function saveYearlyResults() {
+    const prognosisDate = document.getElementById('yearlyPrognosisDate').textContent;
+    const yearlyDescription = document.getElementById('yearlyDescriptionResult').textContent;
+    
+    const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+    
+    const content = `KARMA DECODED - YEARLY PROGNOSIS
+Generated on: ${new Date().toLocaleDateString()}
+Birth Date: ${savedDate}
+${prognosisDate}
+
+🌟 YEARLY GUIDANCE:
+${yearlyDescription}
+
+---
+© 2025 Karma_Decoded | Maria Fistican`;
+    
+    const blob = new Blob([content], { type: 'text/plain' });
+    const url = window.URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `Yearly_Prognosis_${new Date().toISOString().split('T')[0]}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    window.URL.revokeObjectURL(url);
+    
+    alert('Your yearly prognosis has been saved! 💫');
+}
+
+function resetCalculator() {
+    // Reset all inputs
+    document.querySelectorAll('input').forEach(input => input.value = '');
+    document.getElementById('calculationType').value = '';
+    selectedMonthValue = null;
+    
+    // Clear localStorage and reset birthData
+    localStorage.removeItem('userBirthDate');
+    birthData = {};
+    
+    // Remove selections
+    document.querySelectorAll('.month-btn').forEach(btn => btn.classList.remove('selected'));
+    document.querySelectorAll('.calendar-day').forEach(day => day.classList.remove('selected'));
+    
+    // Reset sections visibility
+    document.getElementById('section1').classList.remove('hidden');
+    document.getElementById('section2').classList.add('hidden');
+    document.getElementById('section3').classList.add('hidden');
+    document.getElementById('section4').classList.add('hidden');
+    document.getElementById('yearlyInputs').classList.add('hidden');
+    document.getElementById('monthlyInputs').classList.add('hidden');
+    document.getElementById('dailyInputs').classList.add('hidden');
+    document.getElementById('confirmationSection').classList.add('hidden');
+    document.getElementById('birthDateInput').classList.remove('hidden');
+    document.getElementById('confirmCheckbox').checked = false;
+    
+    // Scroll to top
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+    </script>
+
+    <footer>
+        <p>&copy;  2025 Karma Decoded | Maria Fistican. All rights reserved.</p>
+    </footer>
+</body>
+</html>
+
+
+
+
+
+
+
+
+
+
