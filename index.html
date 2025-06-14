@@ -319,6 +319,48 @@ body {
     max-width: 100% !important;
     box-sizing: border-box !important;
 }
+/* Calendar mobile fixes */
+@media (max-width: 768px) {
+    .calendar-container {
+        width: 100% !important;
+        max-width: 100vw !important;
+        overflow-x: hidden !important;
+        padding: 5px !important;
+        margin: 0 !important;
+        box-sizing: border-box !important;
+    }
+    
+    .calendar-grid {
+        width: 100% !important;
+        max-width: 100% !important;
+        grid-template-columns: repeat(7, 1fr) !important;
+        gap: 2px !important;
+        padding: 5px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .calendar-day {
+        width: 100% !important;
+        max-width: none !important;
+        min-width: 0 !important;
+        padding: 8px 2px !important;
+        font-size: 12px !important;
+        box-sizing: border-box !important;
+    }
+    
+    .month-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 5px !important;
+        padding: 5px !important;
+    }
+    
+    .month-btn {
+        padding: 8px 4px !important;
+        font-size: 12px !important;
+        min-width: 0 !important;
+    }
+}
+
 
 </style>
 
