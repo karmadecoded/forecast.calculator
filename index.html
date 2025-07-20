@@ -177,30 +177,49 @@ button:hover {
 .calendar {
     background: rgba(255,255,255,0.95);
     border-radius: 12px;
-    padding: 20px;
-    margin: 20px 0;
+    padding: 15px; /* Reduced from 20px */
+    margin: 15px 0; /* Reduced from 20px 0 */
+    max-width: 100%; /* Add containment */
+    overflow: hidden; /* Prevent overflow */
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px; /* Reduced from 20px */
+}
+
+.calendar-header h3 {
+    font-size: 1.1rem; /* Make title smaller */
+    margin: 0;
+}
+
+.calendar-header button {
+    padding: 8px 12px; /* Smaller navigation buttons */
+    font-size: 1rem;
+    margin: 0;
 }
 
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 5px;
+    gap: 3px; /* Reduced from 5px */
+    max-width: 100%;
 }
 
 .calendar-day {
-    padding: 10px;
+    padding: 8px 4px; /* Reduced padding */
     text-align: center;
     border: 1px solid #ddd;
     cursor: pointer;
-    border-radius: 5px;
+    border-radius: 4px; /* Smaller radius */
     transition: all 0.3s ease;
+    font-size: 0.9rem; /* Smaller text */
+    min-height: 32px; /* Fixed height */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .calendar-day:hover, .calendar-day.selected {
