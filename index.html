@@ -174,6 +174,7 @@ button:hover {
     color: white;
 }
 
+/* CALENDAR STYLES */
 .calendar {
     background: rgba(255,255,255,0.95);
     border-radius: 12px;
@@ -232,47 +233,6 @@ button:hover {
     cursor: not-allowed;
 }
 
-/* MOBILE CALENDAR FIX */
-@media (max-width: 768px) {
-    .calendar {
-        padding: 10px !important;
-        margin: 10px 0 !important;
-        width: 100% !important;
-        max-width: calc(100vw - 20px) !important;
-        box-sizing: border-box !important;
-    }
-    
-    .calendar-grid {
-        gap: 1px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-    }
-    
-    .calendar-day {
-        padding: 4px 2px !important;
-        font-size: 0.65rem !important;
-        min-height: 25px !important;
-        max-width: 100% !important;
-        border: none !important;
-    }
-    
-    .calendar-header h3 {
-        font-size: 0.9rem !important;
-    }
-    
-    .calendar-header button {
-        padding: 6px 8px !important;
-        font-size: 0.8rem !important;
-    }
-    
-
-    #dailyInputs {
-        padding: 10px !important;
-        width: 100% !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
-    }
-
 .prognosis-date {
     background: linear-gradient(135deg, #5f2797, #8B4CB8);
     color: white;
@@ -292,94 +252,140 @@ footer {
     font-size: 1rem;
 }
 
+/* MOBILE STYLES */
 @media (max-width: 768px) {
+    /* Calendar Mobile Fix */
+    .calendar {
+        padding: 8px;
+        margin: 10px 0;
+        max-width: calc(100vw - 30px);
+        box-sizing: border-box;
+    }
+    
+    .calendar-grid {
+        gap: 0px;
+    }
+    
+    .calendar-day {
+        padding: 1px;
+        font-size: 0.6rem;
+        min-height: 20px;
+        border: none;
+    }
+    
+    .calendar-header h3 {
+        font-size: 0.9rem;
+    }
+    
+    .calendar-header button {
+        padding: 4px 6px;
+        font-size: 0.7rem;
+    }
+    
+    /* Daily Inputs */
+    #dailyInputs {
+        padding: 10px;
+        width: 100%;
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* General Mobile */
     .container {
         padding: 10px;
     }
+    
     h1 {
         font-size: 2rem;
     }
+    
     .section {
         padding: 20px;
     }
-       input, select {
+    
+    input, select {
         width: 100%;
         max-width: 300px;
     }
+    
     button {
         width: 100%;
         max-width: 300px;
         margin: 10px 0;
     }
+    
     .month-grid {
         grid-template-columns: repeat(2, 1fr);
     }
+    
     .sphere img {
         width: 70px;
         height: 70px;
     }
     
     .monthly-forecast .health-sphere,
-.monthly-forecast .money-sphere, 
-.monthly-forecast .relationship-sphere {
-    display: none !important;
+    .monthly-forecast .money-sphere, 
+    .monthly-forecast .relationship-sphere {
+        display: none;
+    }
+    
+    /* Daily Forecast Container */
+    .daily-forecast-container {
+        width: 100%;
+        max-width: 100vw;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        padding: 10px;
+    }
+    
+    .daily-forecast-container * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
+    
+    /* Daily Active Section */
+    #section3.daily-active {
+        width: 100vw;
+        max-width: 100vw;
+        overflow-x: hidden;
+        box-sizing: border-box;
+        padding: 5px;
+        margin: 0;
+    }
+    
+    #section3.daily-active * {
+        max-width: 100%;
+        width: auto;
+        box-sizing: border-box;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;
+    }
+    
+    #section3.daily-active .sphere {
+        width: 100%;
+        max-width: 100%;
+        padding: 10px 5px;
+        margin: 10px 0;
+    }
+    
+    #section3.daily-active .sphere-content {
+        width: 100%;
+        max-width: 100%;
+        padding: 5px;
+    }
+    
+    /* Global Mobile Fix */
+    body {
+        overflow-x: hidden;
+        max-width: 100vw;
+    }
+    
+    * {
+        max-width: 100%;
+        box-sizing: border-box;
+    }
 }
-/* Force daily forecast to stay within screen */
-.daily-forecast-container {
-    width: 100% !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-    padding: 10px !important;
-}
-
-.daily-forecast-container * {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-
-/* Nuclear option for daily forecast mobile */
-#section3.daily-active {
-    width: 100vw !important;
-    max-width: 100vw !important;
-    overflow-x: hidden !important;
-    box-sizing: border-box !important;
-    padding: 5px !important;
-    margin: 0 !important;
-}
-
-#section3.daily-active * {
-    max-width: 100% !important;
-    width: auto !important;
-    box-sizing: border-box !important;
-    word-wrap: break-word !important;
-    overflow-wrap: break-word !important;
-    white-space: normal !important;
-}
-
-#section3.daily-active .sphere {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 10px 5px !important;
-    margin: 10px 0 !important;
-}
-
-#section3.daily-active .sphere-content {
-    width: 100% !important;
-    max-width: 100% !important;
-    padding: 5px !important;
-}
-
-body {
-    overflow-x: hidden !important;
-    max-width: 100vw !important;
-}
-
-* {
-    max-width: 100% !important;
-    box-sizing: border-box !important;
-}
-
 
 
 </style>
