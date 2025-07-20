@@ -255,33 +255,38 @@ footer {
 /* MOBILE STYLES */
 @media (max-width: 768px) {
     /* Calendar Mobile Fix */
-    .calendar {
-        padding: 8px;
-        margin: 10px 0;
-        max-width: calc(100vw - 30px);
-        box-sizing: border-box;
-    }
-    
-    .calendar-grid {
-        gap: 0px;
-    }
-    
-    .calendar-day {
-        padding: 1px;
-        font-size: 0.6rem;
-        min-height: 20px;
-        border: none;
-    }
-    
-    .calendar-header h3 {
-        font-size: 0.9rem;
-    }
-    
-    .calendar-header button {
-        padding: 4px 6px;
-        font-size: 0.7rem;
-    }
-    
+.calendar {
+    padding: 5px !important;
+    margin: 5px 0 !important;
+    max-width: calc(100vw - 20px) !important;
+    box-sizing: border-box !important;
+}
+
+.calendar-grid {
+    gap: 0px !important;
+    font-size: 0 !important;
+}
+
+.calendar-day {
+    padding: 0px !important;
+    font-size: 0.5rem !important;
+    min-height: 18px !important;
+    border: none !important;
+    margin: 0 !important;
+    width: calc(100% / 7) !important;
+    max-width: calc(100% / 7) !important;
+    box-sizing: border-box !important;
+}
+
+.calendar-header h3 {
+    font-size: 0.8rem !important;
+}
+
+.calendar-header button {
+    padding: 2px 4px !important;
+    font-size: 0.6rem !important;
+}
+
     /* Daily Inputs */
     #dailyInputs {
         padding: 10px;
