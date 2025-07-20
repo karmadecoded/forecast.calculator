@@ -177,26 +177,26 @@ button:hover {
 .calendar {
     background: rgba(255,255,255,0.95);
     border-radius: 12px;
-    padding: 15px; /* Reduced from 20px */
-    margin: 15px 0; /* Reduced from 20px 0 */
-    max-width: 100%; /* Add containment */
-    overflow: hidden; /* Prevent overflow */
+    padding: 15px;
+    margin: 15px 0;
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .calendar-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px; /* Reduced from 20px */
+    margin-bottom: 15px;
 }
 
 .calendar-header h3 {
-    font-size: 1.1rem; /* Make title smaller */
+    font-size: 1.1rem;
     margin: 0;
 }
 
 .calendar-header button {
-    padding: 8px 12px; /* Smaller navigation buttons */
+    padding: 8px 12px;
     font-size: 1rem;
     margin: 0;
 }
@@ -204,19 +204,19 @@ button:hover {
 .calendar-grid {
     display: grid;
     grid-template-columns: repeat(7, 1fr);
-    gap: 3px; /* Reduced from 5px */
+    gap: 3px;
     max-width: 100%;
 }
 
 .calendar-day {
-    padding: 8px 4px; /* Reduced padding */
+    padding: 8px 4px;
     text-align: center;
     border: 1px solid #ddd;
     cursor: pointer;
-    border-radius: 4px; /* Smaller radius */
+    border-radius: 4px;
     transition: all 0.3s ease;
-    font-size: 0.9rem; /* Smaller text */
-    min-height: 32px; /* Fixed height */
+    font-size: 0.9rem;
+    min-height: 32px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -230,6 +230,46 @@ button:hover {
 .calendar-day.disabled {
     color: #ccc;
     cursor: not-allowed;
+}
+
+/* MOBILE CALENDAR FIX */
+@media (max-width: 768px) {
+    .calendar {
+        padding: 10px !important;
+        margin: 10px 0 !important;
+        width: 100% !important;
+        max-width: calc(100vw - 40px) !important;
+        box-sizing: border-box !important;
+    }
+    
+    .calendar-grid {
+        gap: 1px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+    
+    .calendar-day {
+        padding: 4px 2px !important;
+        font-size: 0.75rem !important;
+        min-height: 28px !important;
+        max-width: 100% !important;
+    }
+    
+    .calendar-header h3 {
+        font-size: 0.9rem !important;
+    }
+    
+    .calendar-header button {
+        padding: 6px 8px !important;
+        font-size: 0.8rem !important;
+    }
+    
+    #dailyInputs {
+        padding: 10px !important;
+        width: 100% !important;
+        max-width: 100% !important;
+        box-sizing: border-box !important;
+    }
 }
 
 .prognosis-date {
