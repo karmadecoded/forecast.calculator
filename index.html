@@ -639,22 +639,32 @@ function saveBirthDate() {
     localStorage.setItem('userBirthDate', JSON.stringify(window.tempBirthData));
     birthData = window.tempBirthData;
     
+    // FOR PWA - Tell parent PWA that user has completed setup
+    const savedDateForPWA = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'forecastSetupComplete',
+            birthDate: savedDateForPWA
+        }, '*');
+    }
+    
     // Hide section 1 and show section 2
     document.getElementById('section1').classList.add('hidden');
     document.getElementById('section2').classList.remove('hidden');
     
-    // Add permanent birth date message
-    const savedDate = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
+    // FOR STANDALONE WEBSITE - Add permanent birth date message
+    const savedDateForDisplay = `${birthData.day.toString().padStart(2,'0')}/${birthData.month.toString().padStart(2,'0')}/${birthData.year}`;
     const welcomeMsg = document.createElement('div');
     welcomeMsg.innerHTML = `
         <div style="background: rgba(76, 175, 80, 0.1); border: 2px solid #4caf50; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;">
             <p style="color: #2e7d32; font-size: 1.1rem; margin: 0;">
-                ✅ Calculations are made for: <strong>${savedDate}</strong>
+                ✅ Calculations are made for: <strong>${savedDateForDisplay}</strong>
             </p>
         </div>
     `;
     document.getElementById('section2').insertBefore(welcomeMsg, document.getElementById('section2').firstChild);
 }
+
 
 function goBackToEdit() {
     document.getElementById('confirmationSection').classList.add('hidden');
