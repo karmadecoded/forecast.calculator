@@ -665,6 +665,39 @@ function saveBirthDate() {
     document.getElementById('section2').insertBefore(welcomeMsg, document.getElementById('section2').firstChild);
 }
 
+window.addEventListener('message', function(event) {
+    if (event.data.type === 'setPrefilledDOB') {
+        if (event.data.isReturningUser) {
+            // Parse the PWA date format (DD/MM/YYYY)
+            const dateParts = event.data.birthDate.split('/');
+            const day = parseInt(dateParts[0]);
+            const month = parseInt(dateParts[1]);
+            const year = parseInt(dateParts[2]);
+            
+            // Set the birth data
+            birthData = { day, month, year };
+            
+            // Save to localStorage in the calculator's format
+            localStorage.setItem('userBirthDate', JSON.stringify(birthData));
+            
+            // Skip section 1 and go directly to section 2
+            document.getElementById('section1').classList.add('hidden');
+            document.getElementById('section2').classList.remove('hidden');
+            
+            // Add the permanent birth date message
+            const savedDateForDisplay = `${day.toString().padStart(2,'0')}/${month.toString().padStart(2,'0')}/${year}`;
+            const welcomeMsg = document.createElement('div');
+            welcomeMsg.innerHTML = `
+                <div style="background: rgba(76, 175, 80, 0.1); border: 2px solid #4caf50; border-radius: 10px; padding: 15px; margin-bottom: 20px; text-align: center;">
+                    <p style="color: #2e7d32; font-size: 1.1rem; margin: 0;">
+                        ✅ Calculations are made for: <strong>${savedDateForDisplay}</strong>
+                    </p>
+                </div>
+            `;
+            document.getElementById('section2').insertBefore(welcomeMsg, document.getElementById('section2').firstChild);
+        }
+    }
+});
 
 function goBackToEdit() {
     document.getElementById('confirmationSection').classList.add('hidden');
